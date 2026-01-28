@@ -1,0 +1,1379 @@
+
+<!DOCTYPE html> 
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Documentazione grafo Multimediale (Versione Aggiornata)</title>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+<style media="screen" type="text/css">  body {    margin-left: 6em;    margin-right: 12em;    text-align: justify;     padding: 2em 1em 2em 70px;     margin: 0;     font-family: sans-serif;     color: black;     background: white;     background-position: top left;     background-attachment: fixed;     background-repeat: no-repeat;   }   :link { color: #00C; background: transparent }   :visited { color: #00C; background: transparent }   a:active { color: #C00; background: transparent }   a:link img, a:visited img { border-style: none } /* no border on img links */   a:hover {color: white; background: #00C; }   a.backlink:hover {color: white; background: grey; }   a.greylink:hover {color: white; background: grey; }   .margintop {     margin-top: 40px;   }   dt, dd { margin-top: 10px; margin-bottom: 0 } /* opera 3.50 */   dt { font-weight: bold }   h1, h2, h3, h4, h5, h6 { text-align: left }   /* background should be transparent, but WebTV has a bug */   h1, h2, h3, h4, h5 { color: #005A9C; background: white }   h1.title { font: 200% sans-serif }   h1 { font: 170% sans-serif }   h2 { font: 140% sans-serif }   h3 { font: 120% sans-serif }   h4 { font: bold 100% sans-serif }   h5 { font: italic 100% sans-serif }   h6 { font: small-caps 100% sans-serif }   .hide { display: none }   pre { margin-left: 2em }   pre, code { font-family: monospace } /* navigator 4 requires this */   .implementation {    background: aliceblue;  padding: 10px;  margin-top: 5px;   }   fieldset {    margin-top: 20px;    padding: 13px;       text-align: left;   }   legend {    text-transform: uppercase;   }   .entity-div {    margin: 55px 10px 30px 10px;   }   .entity-section {    margin-bottom: 0px;   }   a.backlink {    font-size: 80%;    color: grey;   }   a.greylink {    color: grey;   }    .implementation_title {        font-weight: bold;        font-size: 100%;    }.section-desc {     margin-top: 15px;     margin-bottom: 15px; }         .tree-container {             width: 3000em;             overflow-x: auto;             white-space: nowrap;         }   .tree {margin: 10px 0px 30px -20px; padding: 0; display: inline-block;}   .tree ul {    padding-top: 20px; position: relative;    transition: all 0.5s;    -webkit-transition: all 0.5s;    -moz-transition: all 0.5s;   }   .tree li {    float: left; text-align: center;    list-style-type: none;    position: relative;    padding: 20px 5px 0 5px;    transition: all 0.5s;    -webkit-transition: all 0.5s;    -moz-transition: all 0.5s;   }   /*We will use ::before and ::after to draw the connectors*/   .tree li::before, .tree li::after{    content: '';    position: absolute; top: 0; right: 50%;    border-top: 1px solid #ccc;    width: 50%; height: 20px;   }   .tree li::after{    right: auto; left: 50%;    border-left: 1px solid #ccc;   } .cardinality {
+    font-weight: 700;
+    color: #555;
+    background-color: #f8f9fa;
+    border: 1px solid #d1d5db;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    margin: 0 5px;
+    display: inline-block;
+    vertical-align: middle;
+    /* Effetto rilievo */
+    box-shadow: inset 0 1px 0 #fff, 0 1px 1px rgba(0,0,0,0.05);
+    font-family: 'Courier New', Courier, monospace;
+ 
+}  /*We need to remove left-right connectors from elements without   any siblings*/   .tree li:only-child::after, .tree li:only-child::before {    display: none;   }   /*Remove space from the top of single children*/   .tree li:only-child{ padding-top: 0;}   /*Remove left connector from first child and   right connector from last child*/   .tree li:first-child::before, .tree li:last-child::after{    border: 0 none;   }   /*Adding back the vertical connector to the last nodes*/   .tree li:last-child::before{    border-right: 1px solid #ccc;    border-radius: 0 5px 0 0;    -webkit-border-radius: 0 5px 0 0;    -moz-border-radius: 0 5px 0 0;   }   .tree li:first-child::after{    border-radius: 5px 0 0 0;    -webkit-border-radius: 5px 0 0 0;    -moz-border-radius: 5px 0 0 0;   }   /*Time to add downward connectors from parents*/   .tree ul ul::before{    content: '';    position: absolute; top: 0; left: 50%;    border-left: 1px solid #ccc;    width: 0; height: 20px;   }   .tree li a{    border: 1px solid #ccc;    padding: 5px 10px;    text-decoration: none;    color: #666;    font-family: arial, verdana, tahoma;    font-size: 11px;    display: inline-block;    border-radius: 5px;    -webkit-border-radius: 5px;    -moz-border-radius: 5px;    transition: all 0.5s;    -webkit-transition: all 0.5s;    -moz-transition: all 0.5s;   }   /*Time for some hover effects*/   /*We will apply the hover effect the the lineage of the element also*/   .tree li a:hover, .tree li a:hover+ul li a {    background: #c8e4f8; color: #000; border: 1px solid #94a0b4;   }   /*Connector styles on hover*/   .tree li a:hover+ul li::after,   .tree li a:hover+ul li::before,   .tree li a:hover+ul::before,   .tree li a:hover+ul ul::before{    border-color:  #94a0b4;   }   /*Thats all. I hope you enjoyed it.   Thanks :)*/
+</style>
+<style>
+  .constraints { border-collapse: collapse; margin: 8px 0; font-size: 0.95em; }
+  .constraints th, .constraints td { border: 1px solid #ddd; padding: 6px 8px; vertical-align: top; }
+  .constraints th { background: #f7f7f7; text-align: left; white-space: nowrap; }
+  .enum-list { margin: 6px 0 10px 18px; }
+  .enum-list li code { font-weight: 600; }
+  .note { background: #fff9e8; border-left: 3px solid #ffcc66; padding: 6px 8px; margin: 8px 0; }
+  .index-columns { column-count: 3; -webkit-column-count: 3; -moz-column-count: 3; }
+</style>
+<style>
+  nav.attr-index { margin: 8px 0 12px; font-size: 0.95em; }
+  nav.attr-index a { text-decoration: none; margin-right: 6px; }
+  nav.attr-index .sep { margin: 0 4px; color: #666; }
+</style>
+</head>
+<body>
+<h1 class="title">
+<a href="" target="_blank">Documentazione grafo multimediale </a></h1><h3></h3>
+<p>
+</p>
+<hr class="margintop"/><h1>
+<a name="toc"> </a>Tavola dei Contenuti</h1>
+<ul>
+<li>
+<a href="#a-z">Indice degli elementi</a>
+</li>
+<li>
+<a href="#classes">Nodi</a>
+</li>
+<li>
+<a href="#objproperties">Archi</a>
+</li>
+<li>
+<a href="#dataproperties">Attributi dei Nodi</a>
+</li>
+<li>
+<a href="#datarelproperties">Attributi degli Archi</a>
+</li>
+</ul>
+
+
+
+<hr class="margintop"/><h1>
+<a name="ontologies"></a>Documentazione grafi IpaC</h1>
+<fieldset>
+<legend><h3>
+<a href="" target="_blank">Grafo multimediale</a></h3>
+</legend>
+<h4 style="margin-top: -20px;"></h4>
+<dd>
+<p>Questo documento introduce il grafo di dominio multimediale, ovvero la serie di nodi e archi (relazioni) che riguardano specificatamente il dominio delle risorse digitali. La scelta di modellazione che è stata seguita è quella di creare un nodo, con lo stesso nome del nodo del grafo generale, qualora nuove proprietà di dominio, non pertinenti nel grafo generale, dovessero essere aggiunte. 
+Per il dettaglio dei nuovi nodi e proprietà di dominio per la componente multimediale, si rimanda alle descrizioni dettagliate riportate nel seguito. 
+</p>
+</dd>
+</fieldset>
+<hr class="margintop"/><h1>
+<a name="a-z"> </a>Indice degli elementi</h1>
+        <div id="azterms"> Questo è un indice di tutti i termini, ordinati alfabeticamente, raggruppati per tipo logico principale.             
+            <fieldset>                
+                <legend>Nodi                 
+                </legend>  
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>   |
+<a href="#dr:CulturalCreativeDigitalResource">dr:CulturalCreativeDigitalResource</a>   |
+<a href="#dr:DigitalCollection">dr:DigitalCollection</a>   |
+<a href="#dr:DigitalResource">dr:DigitalResource</a>   |
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>   |
+<a href="#dr:LogicalStructure">dr:LogicalStructure</a>   |
+<a href="#dr:Manifest">dr:Manifest</a>   |
+<a href="#dr:LogicalStructure">dr:PhysicalStructure</a>   |
+<a href="#dr:Structure">dr:Structure</a>
+</fieldset>
+<fieldset>                
+                <legend>Archi                 
+                </legend>  
+<a href="#dr:belongsToStructure">dr:belongsToStructure</a>   |
+<a href="#dr:follows">dr:follows</a>   |
+<a href="#dr:hasContent">dr:hasContent</a>   |
+<a href="#dr:hasCoverImage">dr:hasCoverImage</a>   |
+<a href="#dr:hasDerivedContent">dr:hasDerivedContent</a>   |
+<a href="#dr:hasDerivedEntity">dr:hasDerivedEntity</a>   |
+<a href="#dr:hasDigitalResource">dr:hasDigitalResource</a>   |
+<a href="#dr:hasDistribution">dr:hasDistribution</a>   |
+<a href="#dr:hasStructure">dr:hasStructure</a>   |
+<a href="#dr:includes">dr:includes</a>   |
+<a href="#dr:isDescribedBy">dr:isDescribedBy</a>   |
+<a href="#dr:isMemberOf">dr:isMemberOf</a>   |
+<a href="#dr:precedes">dr:precedes</a>   |
+<a href="#dr:startsWith">dr:startsWith</a>
+</fieldset>
+<fieldset>                
+                <legend>Attributi dei Nodi                
+                </legend>  
+<a href="#dr:byteSize">dr:byteSize</a>   |
+<a href="#dr:checksum">dr:checksum</a>   |
+<a href="#dr:checksumType">dr:checksumType</a>   |
+<a href="#dr:creationMethod">dr:creationMethod</a>   |
+<a href="#dr:licence">dr:licence</a>   |
+<a href="#dr:manifestFormat">dr:manifestFormat</a>   |
+<a href="#dr:mediaType">dr:mediaType</a>   |
+<a href="#dr:mimetype">dr:mimetype</a>   |
+<a href="#dr:numberOfElements">dr:numberOfElements</a>   |
+<a href="#dr:protectionProfile">dr:protectionProfile</a>   |
+<a href="#dr:smartCollection">dr:smartCollection</a>   |
+<a href="#dr:source">dr:source</a>   |
+<a href="#dr:sourceMD">dr:sourceMD</a>   |
+<a href="#dr:subType">dr:subType</a>   |
+<a href="#dr:title">dr:title</a>   |
+<a href="#dr:viewerLink">dr:viewerLink</a>
+</fieldset>
+<fieldset>                
+                <legend>Attributi degli archi                
+                </legend>  
+<a href="#dr:coordinates_includes">dr:coordinates</a>   |
+<a href="#dr:extractionTechnique">dr:extractionTechnique</a>   |
+<a href="#dr:originReason">dr:originReason</a>   |
+<a href="#dr:originType">dr:originType</a>   |
+<a href="#dr:type_hasDigitalResource">dr:type</a>   |
+</fieldset>
+
+<hr class="margintop"/>
+<h1 class="margintop">
+<a name="classes"> </a>Nodi</h1>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:CreativeDigitalResource" name="dr:CreativeDigitalResource">dr:CreativeDigitalResource</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Risorsa Digitale Intellettuale | en: Creative Digital Resource]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li><a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li><a href="#dr:DigitalResource">dr:DigitalResource</a>
+<ul>
+<li><a style="font-weight: bold;">dr:CreativeDigitalResource</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Un'entità logica e fisica digitale, vista come un'unità di senso coerente, creata per permettere una gestione più efficiente e organizzata dei contenuti di una risorsa digitale, secondo logiche strutturali e di aggregazione, di risorse digitali semplici. Una risorsa digitale intellettuale può contenere altre risorse digitali intellettuali ed è descritta mediante dei metadati anche inclusi all'interno di file manifest. È sempre necessario creare una risorsa digitale intellettuale, anche quando essa raccoglie una singola risorsa digitale.
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>È nodo di partenza di:</b>
+<br/>
+<a href="#dr:startsWith">dr:startsWith</a><span class="cardinality">[1..n] </span>|
+<a href="#dr:includes">dr:includes</a><span class="cardinality">[1..n] </span>|
+<a href="#dr:hasCoverImage">dr:hasCoverImage</a><span class="cardinality">[0..n] </span>|
+<a href="#dr:isMemberOf">dr:isMemberOf</a><span class="cardinality">[0..n] </span>|
+<a href="#dr:hasStructure">dr:hasStructure</a><span class="cardinality">[1..n] </span>|
+<a href="#dr:isDescribedBy">dr:isDescribedBy</a><span class="cardinality">[0..n] </span>|
+<a href="#dr:hasContent">dr:hasContent</a><span class="cardinality">[0..n] </span>
+</p>
+<p class="section-desc"><b>È nodo di arrivo di:</b>
+<br/>
+<a href="#dr:hasContent">dr:hasContent</a>
+</p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:licence">dr:licence</a> (xsd:string): La licenza con cui viene distribuita la risorsa digitale intellettuale.
+<span class="cardinality">[1..1] </span></li>
+<li>
+<a href="#dr:sourceMD">dr:sourceMD</a> (xsd:string): Attributo che specifica il supporto fisico da cui è tratta la digitalizzazione.
+<span class="cardinality">[0..1] </span></li>
+<li>
+</ul>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:CulturalCreativeDigitalResource" name="dr:CulturalCreativeDigitalResource">dr:CulturalCreativeDigitalResource</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Risorsa Digitale Culturale | en: Cultural Creative Digital Resource]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li><a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li><a href="#dr:DigitalResource">dr:DigitalResource</a>
+<ul>
+<li><a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+<ul>
+<li><a style="font-weight: bold;">dr:CulturalCreativeDigitalResource</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#cross:CulturalEntity">cross:CulturalEntity</a>
+<ul>
+<li><a style="font-weight: bold;">dr:CulturalCreativeDigitalResource</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Una risorsa digitale che è anche un'entità culturale. Si è reso necessario creare tale classe per poter gestire tecnicamente internamente a I.PaC l'ereditarietà multipla della classe rispetto alle altre due super classi (luogo fisico, entità culturale).
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a> |
+<a href="#cross:CulturalEntity">cross:CulturalEntity</a>
+</p>
+</div>
+
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:DigitalCollection" name="dr:DigitalCollection">dr:DigitalCollection</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Collezione Digitale | en: Digital Collection]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li><a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li><a href="#cross:Collection">cross:Collection</a>
+<ul>
+<li><a style="font-weight: bold;">dr:DigitalCollection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Raccolta “virtuale” ma persistente di risorse digitali, creata secondo logiche tematiche, cronologiche o di altro tipo.
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#cross:Collection">cross:Collection</a>
+</p>
+<p class="section-desc"><b>È nodo di arrivo di:</b>
+<br/>
+<a href="#dr:isMemberOf">dr:isMemberOf</a>
+</p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:smartCollection">dr:smartCollection</a><span class="cardinality">[0..1] </span>(xsd:boolean): Indica se la collezione è smart.
+</li>
+<li>
+<a href="#dr:creationMethod">dr:creationMethod</a><span class="cardinality">[0..1] </span>(xsd:string): Il metodo di creazione della collezione (Manuale/Automatico).
+</li>
+</ul>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:DigitalResource" name="dr:DigitalResource">dr:DigitalResource</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Risorsa Digitale | en: Digital Resource]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li>
+<a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li>
+<a style="font-weight: bold;">dr:DigitalResource</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Entità fisico-logica concepita e creata per essere distribuita attraverso formati digitali (rendition), descritti da un insieme di metadati tecnici.
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#cross:Entity">cross:Entity</a>
+</p>
+<p class="section-desc"><b>È nodo di partenza di:</b>
+<br/>
+<a href="#dr:hasDerivedEntity">dr:hasDerivedEntity</a><span class="cardinality">[0..n] </span>|
+<a href="#dr:hasDistribution">dr:hasDistribution</a><span class="cardinality">[1..n] </span>|
+<a href="#dr:precedes">dr:precedes</a><span class="cardinality">[0..n] </span>|
+<a href="#dr:follows">dr:follows</a><span class="cardinality">[0..n] </span>|
+<a href="#dr:belongsToStructure">dr:belongsToStructure</a><span class="cardinality">[0..n] </span>
+</p>
+<p class="section-desc"><b>È nodo di arrivo di:</b>
+<br/>
+<a href="#dr:hasDigitalResource">dr:hasDigitalResource</a> |
+<a href="#dr:follows">dr:follows</a> |
+<a href="#dr:precedes">dr:precedes</a> |
+<a href="#dr:startsWith">dr:startsWith</a> |
+<a href="#dr:includes">dr:includes</a> |
+<a href="#dr:hasCoverImage">dr:hasCoverImage</a>
+</p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:title">dr:title</a><span class="cardinality">[1..1] </span>(xsd:string): Il titolo della risorsa digitale.
+</li>
+<li>
+<a href="#dr:protectionProfile">dr:protectionProfile</a><span class="cardinality">[1..n] </span>(xsd:string): Un attributo che determina come circoscrivere, limitare o impedire la fruizione e il riuso della risorsa digitale, anche rispetto ai termini e condizioni definiti nel contesto di una licenza d'uso.
+</li>
+<li>
+<a href="#dr:source">dr:source</a><span class="cardinality">[0..1] </span>(xsd:string): La fonte (banca dati, knowledge graph, ecc) da cui proviene la risorsa digitale.
+</li>
+<li>
+<a href="#dr:viewerLink">dr:viewerLink</a><span class="cardinality">[0..n]</span> (xsd:string): Il link allo strumento di visualizzazione preimpostato dall'owner della risorsa per visualizzarla.
+</li>
+</ul>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:DigitalResourceDistribution" name="dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Distribuzione Risorsa Digitale | en: Digital Resource Distribution]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li>
+<a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li>
+<a style="font-weight: bold;">dr:DigitalResourceDistribution</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#cross:Entity">cross:Entity</a>
+</p>
+<p class="section-desc"><b>È nodo di partenza di:</b>
+<br/>
+<a href="#dr:hasDerivedContent">dr:hasDerivedContent</a><span class="cardinality">[0..n] </span></p>
+<p class="section-desc"><b>È nodo di arrivo di:</b>
+<br/>
+<a href="#dr:hasDistribution">dr:hasDistribution</a> |
+<a href="#dr:hasDerivedContent">dr:hasDerivedContent</a></p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:title">dr:title</a><span class="cardinality">[1..n] </span>(xsd:string): Il titolo della distribuzione risorsa digitale.
+</li>
+<li>
+<a href="#dr:mimetype">dr:mimetype</a><span class="cardinality">[1..1] </span>(xsd:string): Identificativo diviso in due parti usato per specificare il tipo di contenuto di un file o di una risorsa trasmesso su internet.
+</li>
+<li>
+<a href="#dr:checksum">dr:checksum</a><span class="cardinality">[1..1] </span>(xsd:string): Un meccanismo che può essere utilizzato per verificare che il contenuto di una distribuzione non sia stato modificato.
+</li>
+<li>
+<a href="#dr:checksumType">dr:checksumType</a><span class="cardinality">[1..1] </span>(xsd:string): La tipologia di checksum.
+</li>
+<li>
+<a href="#dr:mediaType">dr:mediaType</a><span class="cardinality">[1..1] </span>(xsd:string): Il formato del file della distribuzione della risorsa digitale.
+</li>
+<li>
+<a href="#dr:byteSize">dr:byteSize</a><span class="cardinality">[1..1] </span>(xsd:decimal): La dimensione espressa in byte della distribuzione della risorsa digitale.
+</li>
+</ul>
+</p>
+</div>
+
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:LogicalStructure" name="dr:LogicalStructure">dr:LogicalStructure</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Struttura Logica | en: Logical Structure]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li><a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li><a href="#dr:Structure">dr:Structure</a>
+<ul>
+<li><a style="font-weight: bold;">dr:LogicalStructure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>La suddivisione logico-strutturale degli elementi contenutistici della risorsa al fine di crearne l'indice dei contenuti.
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#dr:Structure">dr:Structure</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:Manifest" name="dr:Manifest">dr:Manifest</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Manifest | en: Manifest]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li>
+<a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li>
+<a style="font-weight: bold;">dr:Manifest</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il manifest descrive una risorsa digitale intellettuale in un formato standardizzato, per consentire la condivisione e l'interoperabilità di immagini. Il manifest IIIF include metadati dettagliati riguardanti la risorsa, come informazioni su: La struttura dell'oggetto, descrizione delle immagini e metadati aggiuntivi.
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#cross:Entity">cross:Entity</a>
+</p>
+<p class="section-desc"><b>È nodo di arrivo di:</b>
+<br/>
+<a href="#dr:isDescribedBy">dr:isDescribedBy</a>
+</p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:protectionProfile">dr:protectionProfile</a><span class="cardinality">[1..1] </span>(xsd:string): Il profilo di protezione specificatamente attribuito al manifest IIIF della risorsa digitale intellettuale.
+</li>
+<li>
+<a href="#dr:manifestFormat">dr:manifestFormat</a><span class="cardinality">[1..1] </span>(xsd:string): Il metodo di fruizione del manifest.
+</li>
+</ul>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:PhysicalStructure" name="dr:PhysicalStructure">dr:PhysicalStructure</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Struttura Fisica | en: Physical Structure]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li><a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li><a href="#dr:Structure">dr:Structure</a>
+<ul>
+<li><a style="font-weight: bold;">dr:PhysicalStructure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>L'organizzazione sequenziale delle risorse, volta alla loro fruizione ordinata.
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#dr:Structure">dr:Structure</a>
+</p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:subType">dr:subType</a><span class="cardinality">[0..1] </span>(xsd:string): La caratteristica che evidenzia se la struttura fisica in oggetto è la preferita o meno.
+</li>
+</ul>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Nodo:
+<a href="#dr:Structure" name="dr:Structure">dr:Structure</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: Struttura | en: Structure]
+</span></h3>
+<hr/>
+<div class="tree-container">
+<div class="tree">
+<ul>
+<li>
+<a href="#cross:Entity">cross:Entity</a>
+<ul>
+<li>
+<a style="font-weight: bold;">dr:Structure</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Entità che rappresenta l'organizzazione interna delle RisorseDigitali può essere di tipo fisico (sottonodo StrutturaFisica) o di tipo logico (sottonodo StrutturaLogica).
+</p>
+</p>
+<p class="section-desc"><b>Sottonodo di:</b>
+<br/>
+<a href="#cross:Entity">cross:Entity</a>
+</p>
+<p class="section-desc"><b>È nodo di arrivo di:</b>
+<br/>
+<a href="#dr:hasStructure">dr:hasStructure</a> |
+<a href="#dr:belongsToStructure">dr:belongsToStructure</a>
+</p>
+<p class="section-desc"><b>Attributi:</b>
+<br/>
+<ul>
+<li>
+<a href="#dr:numberOfElements">dr:numberOfElements</a><span class="cardinality">[0..1] </span>(xsd:integer): Il numero di elementi (risorse digitali) contenuto nella struttura di una RisorsaDigitale.
+</li>
+</ul>
+</p>
+</div>
+<hr class="margintop"/>
+<h1 class="margintop"><a name="objproperties"></a>Archi</h1>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:belongsToStructure" name="dr:belongsToStructure">dr:belongsToStructure</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: appartieneAstruttura]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una RisorsaDigitale alla Struttura, fisica o logica, che la descrive.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:Structure">dr:Structure</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:follows" name="dr:follows">dr:follows</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haRisorsaPrecedente]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega tra loro due RisorseDigitali: indica l'ordine in cui sono disposte relazionando una risorsa con quella che la precede.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasContent" name="dr:hasContent">dr:hasContent</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haContenuto]
+  </span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega la risorsa digitale intellettuale (ad esempio il capitolo di un libro) a un'altra risorsa digitale intellettuale contenuta in essa (ad esempio un paragrafo di quel capitolo).
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasCoverImage" name="dr:hasCoverImage">dr:hasCoverImage</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haImmagineCopertina]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: si; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una RisorsaDigitaleIntellettuale alla RisorsaDigitale che funge da immagine di copertina.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasDerivedContent" name="dr:hasDerivedContent">dr:hasDerivedContent</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haContenutoDerivato]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Attributi di relazione:</b>
+<ul><li><a href="#dr:originType">originType</a><span class='cardinality'>[0..1]</span></li><li><a href="#dr:originReason">originReason</a><span class='cardinality'>[0..n]</span></li></ul>
+</p>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega la distribuzione di una risorsa digitale ad una nuova distribuzione della risorsa digitale derivata da processi di elaborazione automatica.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasDerivedEntity" name="dr:hasDerivedEntity">dr:hasDerivedEntity</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haEntitaDerivata]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Attributi di relazione:</b>
+<ul><li><a href="#dr:extractionTechnique">extractionTechnique</a><span class='cardinality'>[0..1]</span></li></ul>
+</p>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega la risorsa digitale con qualsiasi entità del mondo che è derivata, attraverso diverse tecniche di estrazione, dalla risorsa digitale.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#cross:Entity">cross:Entity</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasDigitalResource" name="dr:hasDigitalResource">dr:hasDigitalResource</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haRisorsaDigitale]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Attributi di relazione:</b>
+<ul><li><a href="#dr:type_hasDigitalResource">type</a><span class='cardinality'>[0..1]</span></li></ul>
+</p>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega un'entità generica con una risorsa digitale correlata. Si specifica con l'attributo di relazione tipo, se il collegamento è di associazione o referenza.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#cross:Entity">cross:Entity</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+</div>
+
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasDistribution" name="dr:hasDistribution">dr:hasDistribution</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haDistribuzione]
+</span></h3><p class="section-desc"><b>Vincoli:</b> si; cardinalità: 1..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>La relazione che lega la risorsa digitale a una specifica rappresentazione della stessa.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:hasStructure" name="dr:hasStructure">dr:hasStructure</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haStruttura]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: sì; cardinalità: 1..n.</p>
+
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una RisorsaDigitaleIntellettuale alla Struttura, logica o fisica, che la descrive.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:Structure">dr:Structure</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:includes" name="dr:includes">dr:includes</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: include]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: sì; cardinalità: 1..n.</p>
+<hr/>
+<p class="section-desc"><b>Attributi di relazione:</b>
+<ul><li><a href="#dr:coordinates_includes">coordinates</a><span class='cardinality'>[0..1]</span></li></ul>
+</p>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una RisorsaDigitaleIntellettuale alla RisorsaDigitale contenuta in essa, inserendo le coordinate nell'attributo di relazione è possibile specificare il preciso punto di inizio.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:isDescribedBy" name="dr:isDescribedBy">dr:isDescribedBy</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: eDescrittaDa]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega la risorsa digitale intellettuale al Manifest IIIF che la descrive.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:Manifest">dr:Manifest</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:isMemberOf" name="dr:isMemberOf">dr:isMemberOf</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: èMembroDi]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega l'entità culturale a una o più collezioni di cui fa parte.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalCollection">dr:DigitalCollection</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:precedes" name="dr:precedes">dr:precedes</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: haRisorsaSuccessiva]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: no; cardinalità: 0..n.</p>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega tra loro due RisorseDigitali: indica l'ordine in cui sono disposte relazionando una risorsa con quella che la succede.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Arco:
+<a href="#dr:startsWith" name="dr:startsWith">dr:startsWith</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: iniziaDa]
+</span></h3><p class="section-desc"><b>Vincoli:</b> obbligatorio: sì; cardinalità: 1..n.</p>
+<hr/>
+<p class="section-desc"><b>Attributi di relazione:</b>
+<ul><li><a href="#dr:coordinates_startsWith">coordinates</a><span class='cardinality'>[0..1]</span></li></ul>
+</p>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una CreativeDigitalResource alla DigitalResource da cui parte il contenuto creativo, inserendo le coordinate nell'attributo di relazione è possibile specificare il preciso punto di inizio.
+</p>
+</p>
+<p class="section-desc"><b>Nodo di partenza:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Nodo di arrivo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+</div>
+<hr class="margintop"/>
+<h1 class="margintop"><a name="dataproperties"></a>Attributi dei Nodi</h1>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:byteSize" name="dr:byteSize">dr:byteSize</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: dimensione in byte | en: byte size]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>La dimensione in byte della distribuzione.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:decimal
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:checksum" name="dr:checksum">dr:checksum</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: checksum | en: checksum]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Checksum per la verifica dell'integrità.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:checksumType" name="dr:checksumType">dr:checksumType</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: tipo di checksum | en: checksum type]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il tipo di algoritmo di checksum utilizzato.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:creationMethod" name="dr:creationMethod">dr:creationMethod</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: metodo di creazione | en: creation method]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il metodo di creazione della collezione (es. Manuale).</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalCollection">dr:DigitalCollection</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:licence" name="dr:licence">dr:licence</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: licenza | en: licence]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>La licenza della risorsa digitale intellettuale.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> si
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:manifestFormat" name="dr:manifestFormat">dr:manifestFormat</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: formato manifest | en: manifest format]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il formato o metodo di fruizione del manifest.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:Manifest">dr:Manifest</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:mediaType" name="dr:mediaType">dr:mediaType</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: tipo media | en: media type]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il formato del file (es. image/jpeg).</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:mimetype" name="dr:mimetype">dr:mimetype</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: mimetype | en: mimetype]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il mimetype della distribuzione.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> 1..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:numberOfElements" name="dr:numberOfElements">dr:numberOfElements</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: numero di elementi | en: number of elements]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il numero di elementi nella struttura.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:Structure">dr:Structure</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:integer
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:protectionProfile" name="dr:protectionProfile">dr:protectionProfile</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: profilo di protezione | en: protection profile]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il profilo di protezione.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>, <a href="#dr:Manifest">dr:Manifest</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p><p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> variabile (si rimanda alle specifiche dei singoli nodi) 
+</p></div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:smartCollection" name="dr:smartCollection">dr:smartCollection</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: collezione smart | en: smart collection]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Indica se è una collezione "smart".</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalCollection">dr:DigitalCollection</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:boolean
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:source" name="dr:source">dr:source</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: fonte | en: source]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>La fonte della risorsa digitale.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:sourceMD" name="dr:sourceMD">dr:sourceMD</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: fonte digitalizzazione | en: source digitalization]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il supporto fisico da cui deriva la digitalizzazione.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:CreativeDigitalResource">dr:CreativeDigitalResource</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:subType" name="dr:subType">dr:subType</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: sottotipo | en: sub type]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Indica se la struttura è preferita o meno.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:PhysicalStructure">dr:PhysicalStructure</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:title" name="dr:title">dr:title</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: titolo | en: title]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il titolo.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>, <a href="#dr:DigitalResourceDistribution">dr:DigitalResourceDistribution</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> sì
+<br/> <b>Cardinalità</b> variabile (si rimanda alle specifiche dei singoli nodi) 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:viewerLink" name="dr:viewerLink">dr:viewerLink</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: link al visualizzatore | en: viewer link]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Link a un visualizzatore.</p>
+</p>
+<p class="section-desc"><b>Appartiene al nodo:</b>
+<br/>
+<a href="#dr:DigitalResource">dr:DigitalResource</a>
+</p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..n 
+</p>
+</div>
+<hr class="margintop"/>
+<h1 class="margintop"><a name="datarelproperties"></a>Attributi degli Archi</h1>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:coordinates_includes" name="dr:coordinates_includes">dr:coordinates</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: coordinate | en: coordinates]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Indicazioni per individuare il punto d'inizio di un contenuto creativo.</p>
+</p>
+<p class="section-desc"><b>Usato nell'Arco:</b>
+<br/>
+<a href="#dr:includes">dr:includes</a>, <a href="#dr:startsWith">dr:startsWith</a></p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:extractionTechnique" name="dr:extractionTechnique">dr:extractionTechnique</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: tecnica di estrazione | en: extraction technique]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Meccanismo di derivazione di un'entità (es. OCR).</p>
+</p>
+<p class="section-desc"><b>Usato nell'Arco:</b>
+<br/>
+<a href="#dr:hasDerivedEntity">dr:hasDerivedEntity</a></p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:originReason" name="dr:originReason">dr:originReason</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: motivo di origine | en: origin reason]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Motivo testuale per cui il contenuto è stato derivato.</p>
+</p>
+<p class="section-desc"><b>Usato nell'Arco:</b>
+<br/>
+<a href="#dr:hasDerivedContent">dr:hasDerivedContent</a></p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..n 
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:originType" name="dr:originType">dr:originType</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: tipo di origine | en: origin type]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>Il metodo con cui il contenuto è stato derivato.</p>
+</p>
+<p class="section-desc"><b>Usato nell'Arco:</b>
+<br/>
+<a href="#dr:hasDerivedContent">dr:hasDerivedContent</a></p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1
+</p>
+</div>
+<div class="entity-div">
+<h3 class="entity-section">Attributo:
+<a href="#dr:type_hasDigitalResource" name="dr:type_hasDigitalResource">dr:type</a><small>
+<a class="backlink" href="#a-z">torna su</a></small>
+<span class="translation">[it: tipo | en: type]
+</span></h3>
+<hr/>
+<p class="section-desc"><b>Descrizione</b>
+<br/>
+<p>La tipologia di relazione (associazione o referenza) tra un'entità e una risorsa digitale.</p>
+</p>
+<p class="section-desc"><b>Usato nell'Arco:</b>
+<br/>
+<a href="#dr:hasDigitalResource">dr:hasDigitalResource</a></p>
+<p class="section-desc"><b>Tipo di dato:</b>
+<br/>
+xsd:string
+</p>
+<p class="section-desc"><b>Obbligatorietà:</b> no
+<br/> <b>Cardinalità</b> 0..1 
+</p>
+</div>
+
+</body>
+</html>

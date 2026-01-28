@@ -1,0 +1,3441 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Documentazione del grafo di dominio archivistico</title>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+<style media="screen" type="text/css">
+
+
+  body {
+      margin-left: 6em;
+      margin-right: 12em;
+      text-align: justify;
+    padding: 2em 1em 2em 70px;
+    margin: 0;
+    font-family: sans-serif;
+    color: black;
+    background: white;
+    background-position: top left;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+
+  :link { color: #00C; background: transparent }
+  :visited { color: #00C; background: transparent }
+  a:active { color: #C00; background: transparent }
+
+  a:link img, a:visited img { border-style: none } /* no border on img links */
+
+  a:hover {color: white; background: #00C; }
+  a.backlink:hover {color: white; background: grey; }
+  a.greylink:hover {color: white; background: grey; }
+
+  .margintop {
+       margin-top: 40px;
+  }
+
+
+  dt, dd { margin-top: 10px; margin-bottom: 0 } /* opera 3.50 */
+  dt { font-weight: bold }
+
+
+  h1, h2, h3, h4, h5, h6 { text-align: left }
+  /* background should be transparent, but WebTV has a bug */
+  h1, h2, h3, h4, h5 { color: #005A9C; background: white }
+  h1.title { font: 200% sans-serif }
+  h1 { font: 170% sans-serif }
+  h2 { font: 140% sans-serif }
+  h3 { font: 120% sans-serif }
+  h4 { font: bold 100% sans-serif }
+  h5 { font: italic 100% sans-serif }
+  h6 { font: small-caps 100% sans-serif }
+
+  .hide { display: none }
+
+
+  pre { margin-left: 2em }
+
+  pre, code { font-family: monospace } /* navigator 4 requires this */
+
+
+  .implementation {
+      background: aliceblue;
+    padding: 10px;
+    margin-top: 5px;
+  }
+
+  fieldset {
+      margin-top: 20px;
+      padding: 13px;
+      text-align: left;
+  }
+
+  legend {
+      text-transform: uppercase;
+  }
+
+  .entity-div {
+      margin: 55px 10px 30px 10px;
+  }
+
+  .entity-section {
+      margin-bottom: 0px;
+  }
+
+
+  a.backlink {
+      font-size: 80%;
+      color: grey;
+  }
+
+  a.greylink {
+      color: grey;
+  }
+
+
+   .implementation_title {
+
+       font-weight: bold;
+       font-size: 100%;
+   }
+
+.section-desc {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+
+
+
+        .tree-container {
+            width: 3000em;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+            .tree {margin: 10px 0px 30px -20px; padding: 0; display: inline-block;}
+
+            .tree ul {
+                padding-top: 20px; position: relative;
+
+                transition: all 0.5s;
+                -webkit-transition: all 0.5s;
+                -moz-transition: all 0.5s;
+            }
+
+            .tree li {
+                float: left; text-align: center;
+                list-style-type: none;
+                position: relative;
+                padding: 20px 5px 0 5px;
+
+                transition: all 0.5s;
+                -webkit-transition: all 0.5s;
+                -moz-transition: all 0.5s;
+            }.cardinality {
+    font-weight: 700;
+    color: #555; 
+    background-color: #f8f9fa;
+    border: 1px solid #d1d5db;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    margin: 0 5px;
+    display: inline-block;
+    vertical-align: middle;
+    /* Effetto rilievo */
+    box-shadow: inset 0 1px 0 #fff, 0 1px 1px rgba(0,0,0,0.05);
+    font-family: 'Courier New', Courier, monospace; 
+
+}	
+
+            /*We will use ::before and ::after to draw the connectors*/
+
+            .tree li::before, .tree li::after{
+                content: '';
+                position: absolute; top: 0; right: 50%;
+                border-top: 1px solid #ccc;
+                width: 50%; height: 20px;
+            }
+            .tree li::after{
+                right: auto; left: 50%;
+                border-left: 1px solid #ccc;
+            }
+
+            /*We need to remove left-right connectors from elements without
+            any siblings*/
+            .tree li:only-child::after, .tree li:only-child::before {
+                display: none;
+            }
+
+            /*Remove space from the top of single children*/
+            .tree li:only-child{ padding-top: 0;}
+
+            /*Remove left connector from first child and
+            right connector from last child*/
+            .tree li:first-child::before, .tree li:last-child::after{
+                border: 0 none;
+            }
+            /*Adding back the vertical connector to the last nodes*/
+            .tree li:last-child::before{
+                border-right: 1px solid #ccc;
+                border-radius: 0 5px 0 0;
+                -webkit-border-radius: 0 5px 0 0;
+                -moz-border-radius: 0 5px 0 0;
+            }
+            .tree li:first-child::after{
+                border-radius: 5px 0 0 0;
+                -webkit-border-radius: 5px 0 0 0;
+                -moz-border-radius: 5px 0 0 0;
+            }
+
+            /*Time to add downward connectors from parents*/
+            .tree ul ul::before{
+                content: '';
+                position: absolute; top: 0; left: 50%;
+                border-left: 1px solid #ccc;
+                width: 0; height: 20px;
+            }
+
+            .tree li a{
+                border: 1px solid #ccc;
+                padding: 5px 10px;
+                text-decoration: none;
+                color: #666;
+                font-family: arial, verdana, tahoma;
+                font-size: 11px;
+                display: inline-block;
+
+                border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+
+                transition: all 0.5s;
+                -webkit-transition: all 0.5s;
+                -moz-transition: all 0.5s;
+            }
+
+            /*Time for some hover effects*/
+            /*We will apply the hover effect the the lineage of the element also*/
+            .tree li a:hover, .tree li a:hover+ul li a {
+                background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+            }
+            /*Connector styles on hover*/
+            .tree li a:hover+ul li::after,
+            .tree li a:hover+ul li::before,
+            .tree li a:hover+ul::before,
+            .tree li a:hover+ul ul::before{
+                border-color:  #94a0b4;
+            }
+
+            /*Thats all. I hope you enjoyed it.
+            Thanks :)*/
+
+
+  </style>
+</head>
+<body>
+<h1 class="title"><a href="" target="_blank">Documentazione del grafo di dominio archivistico</a></h1>
+<h3></h3>
+<p></p>
+<hr class="margintop"/>
+<h1><a name="toc">&nbsp;</a>Tavola dei Contenuti</h1>
+<ul>
+<li><a href="#a-z">Indice degli elementi</a></li>
+<li><a href="#classes">Nodi</a></li>
+<li><a href="#objproperties">Archi</a></li>
+<li><a href="#dataproperties">Attributi dei Nodi</a></li>
+<li><a href="#datarelproperties">Attributi degli Archi</a></li>
+</ul>
+<hr class="margintop"/>
+<h1><a name="ontologies"></a>Documentazione grafi I.PaC</h1>
+<fieldset> <legend><h3><a href="http://www.ontomic.org/ontomic.owl" target="_blank">GRAFO DI DOMINIO ARCHIVISTICO</a></h3></legend>
+<h4 style="margin-top: -20px;"></h4>
+<dd><p>Questo documento descrive la modellazione concettuale del grafo archivistico come estensione del grafo della conoscenza unificato dello spazio dei dati dei beni culturali italiano I.PaC. La modellazione considera nello specifico tutte quelle entità dipendenti dallo specifico dominio archivistico (i complessi archivistici, le unità archivistiche, le unità documentarie, gli strumenti di ricerca), e tutte quelle entità e relazioni di dominio che sono comuni ai diversi ambiti, archivistico, bibliotecario, ABAP – Archeologico delle Belle Arti e del Paesaggio, identificabili sotto il cappello di patrimonio culturale. </p>
+<p>La modellazione concettuale è stata realizzata utilizzando il linguaggio di modellazione Unified Modeling Language (UML). Ciascun elemento è descritto nel dettaglio nelle sezioni successive, dove vengono definite le varie classi, gli attributi di classe (ovvero relazioni tra entità e tipi primitivi) e le relazioni tra entità nonché attributi di relazioni tra entità. Tutti gli elementi specifici sono corredati di definizioni e di eventuali note d’uso per specificare meglio il loro significato e dare indicazioni operative su come materializzare tali elementi. </p></dd>
+</fieldset>
+<hr class="margintop"/>
+<h1><a name="a-z">&nbsp;</a>Elementi principali</h1>
+<div id="azterms">
+
+    Questo è un indice di tutti i termini, ordinati alfabeticamente, raggruppati per tipo logico principale.
+
+    
+            
+<fieldset><legend>Nodi (27)</legend><a href='#arch:Agent'>arch:Agent</a>
+ | <a href='#arch:ArchivalRecordSet'>arch:ArchivalRecordSet</a>
+ | <a href='#arch:ArchivalResource'>arch:ArchivalResource</a>
+ | <a href='#arch:ArchivalResourceLevel'>arch:ArchivalResourceLevel</a>
+ | <a href='#arch:AudioVisualItem'>arch:AudioVisualItem</a>
+ | <a href='#arch:Binding'>arch:Binding</a>
+ | <a href='#arch:CarrierExtent'>arch:CarrierExtent</a>
+ | <a href='#arch:CartographicItem'>arch:CartographicItem</a>
+ | <a href='#arch:Extent'>arch:Extent</a>
+ | <a href='#arch:Family'>arch:Family</a>
+ | <a href='#arch:File'>arch:File</a>
+ | <a href='#arch:FindingAid'>arch:FindingAid</a>
+ | <a href='#arch:GraphicItem'>arch:GraphicItem</a>
+ | <a href='#arch:HistoricalOrInstitutionalContext'>arch:HistoricalOrInstitutionalContext</a>
+ | <a href='#arch:InstitutionalProfile'>arch:InstitutionalProfile</a>
+ | <a href='#arch:Item'>arch:Item</a>
+ | <a href='#arch:Manuscript'>arch:Manuscript</a>
+ | <a href='#arch:Organization'>arch:Organization</a>
+ | <a href='#arch:Parchment'>arch:Parchment</a>
+ | <a href='#arch:Person'>arch:Person</a>
+ | <a href='#arch:Photograph'>arch:Photograph</a>
+ | <a href='#arch:Project'>arch:Project</a>
+ | <a href='#arch:Publication'>arch:Publication</a>
+ | <a href='#arch:Regulation'>arch:Regulation</a>
+ | <a href='#arch:ScriptType'>arch:ScriptType</a>
+ | <a href='#arch:Seal'>arch:Seal</a>
+ | <a href='#arch:UseCondition'>arch:UseCondition</a>
+</fieldset><fieldset><legend>Archi (21)</legend><a href='#arch:hasArchivalResource'>arch:hasArchivalResource</a>
+ | <a href='#arch:hasArchivalResourceLevel'>arch:hasArchivalResourceLevel</a>
+ | <a href='#arch:hasAssociatedAgent'>arch:hasAssociatedAgent</a>
+ | <a href='#arch:hasAssociatedContext'>arch:hasAssociatedContext</a>
+ | <a href='#arch:hasAssociatedProfile'>arch:hasAssociatedProfile</a>
+ | <a href='#arch:hasBinding'>arch:hasBinding</a>
+ | <a href='#arch:hasCarrierExtent'>arch:hasCarrierExtent</a>
+ | <a href='#arch:hasCopy'>arch:hasCopy</a>
+ | <a href='#arch:hasExtent'>arch:hasExtent</a>
+ | <a href='#arch:hasFindingAid'>arch:hasFindingAid</a>
+ | <a href='#arch:hasHistoricalOrInstitutionalContext'>arch:hasHistoricalOrInstitutionalContext</a>
+ | <a href='#arch:hasInstitutionalProfile'>arch:hasInstitutionalProfile</a>
+ | <a href='#arch:hasOrganizationType'>arch:hasOrganizationType</a>
+ | <a href='#arch:hasOriginal'>arch:hasOriginal</a>
+ | <a href='#arch:hasRelatedMaterial'>arch:hasRelatedMaterial</a>
+ | <a href='#arch:hasScriptType'>arch:hasScriptType</a>
+ | <a href='#arch:hasSeal'>arch:hasSeal</a>
+ | <a href='#arch:hasType'>arch:hasType</a>
+ | <a href='#arch:hasUseCondition'>arch:hasUseCondition</a>
+ | <a href='#arch:isDescribedBy'>arch:isDescribedBy</a>
+ | <a href='#arch:isDirectlyIncludedIn'>arch:isDirectlyIncludedIn</a>
+</fieldset><fieldset><legend>Attributi dei Nodi (74)</legend><a href='#arch:abstract'>arch:abstract</a>
+ | <a href='#arch:accessConditionNote'>arch:accessConditionNote</a>
+ | <a href='#arch:accessConditionType'>arch:accessConditionType</a>
+ | <a href='#arch:accruals'>arch:accruals</a>
+ | <a href='#arch:acquisitionInformation'>arch:acquisitionInformation</a>
+ | <a href='#arch:acquisitionManagementPolicy'>arch:acquisitionManagementPolicy</a>
+ | <a href='#arch:actReference'>arch:actReference</a>
+ | <a href='#arch:actType'>arch:actType</a>
+ | <a href='#arch:annex'>arch:annex</a>
+ | <a href='#arch:appraisalInformation'>arch:appraisalInformation</a>
+ | <a href='#arch:archivalHeritage'>arch:archivalHeritage</a>
+ | <a href='#arch:arrangementCriterion'>arch:arrangementCriterion</a>
+ | <a href='#arch:author'>arch:author</a>
+ | <a href='#arch:bibliographicSpecification'>arch:bibliographicSpecification</a>
+ | <a href='#arch:citationId'>arch:citationId</a>
+ | <a href='#arch:classificationCode'>arch:classificationCode</a>
+ | <a href='#arch:classificationNote'>arch:classificationNote</a>
+ | <a href='#arch:codicologicalNote'>arch:codicologicalNote</a>
+ | <a href='#arch:compilingMode'>arch:compilingMode</a>
+ | <a href='#arch:contentDescription'>arch:contentDescription</a>
+ | <a href='#arch:contributionTitle'>arch:contributionTitle</a>
+ | <a href='#arch:custodialHistory'>arch:custodialHistory</a>
+ | <a href='#arch:documentState'>arch:documentState</a>
+ | <a href='#arch:documentaryFormType'>arch:documentaryFormType</a>
+ | <a href='#arch:editionLocation'>arch:editionLocation</a>
+ | <a href='#arch:editionNumber'>arch:editionNumber</a>
+ | <a href='#arch:editionYear'>arch:editionYear</a>
+ | <a href='#arch:editor'>arch:editor</a>
+ | <a href='#arch:executionMode'>arch:executionMode</a>
+ | <a href='#arch:explicit'>arch:explicit</a>
+ | <a href='#arch:extentInMeters'>arch:extentInMeters</a>
+ | <a href='#arch:extentNote'>arch:extentNote</a>
+ | <a href='#arch:externalDescription'>arch:externalDescription</a>
+ | <a href='#arch:finalArrangementNumber'>arch:finalArrangementNumber</a>
+ | <a href='#arch:grid'>arch:grid</a>
+ | <a href='#arch:historicalInformation'>arch:historicalInformation</a>
+ | <a href='#arch:historicalNote'>arch:historicalNote</a>
+ | <a href='#arch:incipit'>arch:incipit</a>
+ | <a href='#arch:issuingAuthority'>arch:issuingAuthority</a>
+ | <a href='#arch:latitude'>arch:latitude</a>
+ | <a href='#arch:longitude'>arch:longitude</a>
+ | <a href='#arch:mapLegend'>arch:mapLegend</a>
+ | <a href='#arch:material'>arch:material</a>
+ | <a href='#arch:mediumType'>arch:mediumType</a>
+ | <a href='#arch:nobleTitle'>arch:nobleTitle</a>
+ | <a href='#arch:number'>arch:number</a>
+ | <a href='#arch:orientation'>arch:orientation</a>
+ | <a href='#arch:pageOrCatalogNumber'>arch:pageOrCatalogNumber</a>
+ | <a href='#arch:parchmentNote'>arch:parchmentNote</a>
+ | <a href='#arch:physicalMedium'>arch:physicalMedium</a>
+ | <a href='#arch:physicalMedium '>arch:physicalMedium </a>
+ | <a href='#arch:printed'>arch:printed</a>
+ | <a href='#arch:progressStatus'>arch:progressStatus</a>
+ | <a href='#arch:projectDescription'>arch:projectDescription</a>
+ | <a href='#arch:projection'>arch:projection</a>
+ | <a href='#arch:publicationLocation'>arch:publicationLocation</a>
+ | <a href='#arch:publisher'>arch:publisher</a>
+ | <a href='#arch:purpose'>arch:purpose</a>
+ | <a href='#arch:quantity'>arch:quantity</a>
+ | <a href='#arch:relatedTitle'>arch:relatedTitle</a>
+ | <a href='#arch:relatedTitleNote'>arch:relatedTitleNote</a>
+ | <a href='#arch:scaleType'>arch:scaleType</a>
+ | <a href='#arch:scaleValue'>arch:scaleValue</a>
+ | <a href='#arch:scriptType'>arch:scriptType</a>
+ | <a href='#arch:sealingMethod'>arch:sealingMethod</a>
+ | <a href='#arch:sequenceNumber'>arch:sequenceNumber</a>
+ | <a href='#arch:sheetNumber'>arch:sheetNumber</a>
+ | <a href='#arch:techincalImplementation'>arch:techincalImplementation</a>
+ | <a href='#arch:title'>arch:title</a>
+ | <a href='#arch:transcription'>arch:transcription</a>
+ | <a href='#arch:type'>arch:type</a>
+ | <a href='#arch:use'>arch:use</a>
+ | <a href='#arch:versionDetail'>arch:versionDetail</a>
+ | <a href='#arch:volume'>arch:volume</a>
+</fieldset><fieldset><legend>Attributi degli Archi (5)</legend><a href='#arch:endDate'>arch:endDate</a>
+ | <a href='#arch:relationSpecification'>arch:relationSpecification</a>
+ | <a href='#arch:startDate'>arch:startDate</a>
+ | <a href='#arch:time'>arch:time</a>
+ | <a href='#arch:type (rel)'>arch:type (rel)</a>
+</fieldset></div>
+<hr class='margintop'/><h1 class='margintop'><a name='classes'>&nbsp;</a>Nodi</h1>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Agent' name='arch:Agent'>arch:Agent</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Agente | en: Agent]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Agent' style=''>cross:Agent</a>
+<ul>
+<li><a href='#arch:Agent' style='font-weight: bold;'>arch:Agent</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Qualsiasi elemento agentivo, sia fisico (ad esempio una persona, un robot, una quercia), sia sociale (ad esempio un'azienda, un'istituzione, una comunità) che opera nel mondo.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Agent>cross:Agent</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasAssociatedAgent>arch:hasAssociatedAgent</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasHistoricalOrInstitutionalContext>arch:hasHistoricalOrInstitutionalContext</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasInstitutionalProfile>arch:hasInstitutionalProfile</a><span class="cardinality">[0..n]</span></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasAssociatedAgent>arch:hasAssociatedAgent</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:acquisitionManagementPolicy'>arch:acquisitionManagementPolicy</a><span class="cardinality">[0..1]</span>(xsd:string): Le politiche adottate dall’agente per la gestione e l’acquisizione delle risorse archivistiche o documentarie.</li>
+<li><a href='#arch:archivalHeritage'>arch:archivalHeritage</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni relative al patrimonio (materiale o immateriale) posseduto, gestito o prodotto dall’agente.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:ArchivalRecordSet' name='arch:ArchivalRecordSet'>arch:ArchivalRecordSet</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: ComplessoArchivistico | en: ArchivalRecordSet]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:ArchivalRecordSet' style='font-weight: bold;'>arch:ArchivalRecordSet</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Insieme della documentazione prodotta e accumulata dal medesimo soggetto, o da più soggetti che si sono susseguiti nell’espletamento delle medesime funzioni, che costituisce l’oggetto della descrizione archivistica.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:accruals'>arch:accruals</a><span class="cardinality">[0..1]</span>(xsd:string): Indica se sono previsti ulteriori versamenti o incrementi documentari nel tempo.</li>
+<li><a href='#arch:acquisitionInformation'>arch:acquisitionInformation</a><span class="cardinality">[0..1]</span>(xsd:string): Le modalità attraverso cui il complesso è stato acquisito o versato all'istituto conservatore (es. versamento, dono, deposito, acquisto).</li>
+<li><a href='#arch:appraisalInformation'>arch:appraisalInformation</a><span class="cardinality">[0..1]</span>(xsd:string): Le informazioni relative ai criteri, ai tempi e alle procedure applicati per la selezione e lo scarto della documentazione del complesso archivistico.</li>
+<li><a href='#arch:classificationCode'>arch:classificationCode</a><span class="cardinality">[0..1]</span> (xsd:string): La classificazione archivistica applicata al complesso, secondo un sistema gerarchico o tematico di organizzazione delle risorse.</li>
+<li><a href='#arch:classificationNote'>arch:classificationNote</a><span class="cardinality">[0..1]</span>(xsd:string): Ulteriori dettagli o specificazioni relativi alla classificazione del complesso archivistico, come articolazioni interne o codifiche utilizzate.</li>
+<li><a href='#arch:extentInMeters'>arch:extentInMeters</a><span class="cardinality">[0..1]</span>(xsd:string): Estensione fisica del complesso archivistico espressa in metri lineari di scaffalatura, utilizzata per quantificare lo spazio occupato dalla documentazione.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:ArchivalResource' name='arch:ArchivalResource'>arch:ArchivalResource</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: RisorsaArchivistica | en: ArchivalResource]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style='font-weight: bold;'>arch:ArchivalResource</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Concetto logico introdotto per rappresentare gli aspetti comuni tra un complesso archivistico, un'unità archivistica e un'unità documentaria.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:CulturalEntity>cross:CulturalEntity</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasArchivalResourceLevel>arch:hasArchivalResourceLevel</a><span class="cardinality">[1..1]</span>| <a href=#arch:hasCarrierExtent>arch:hasCarrierExtent</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasCopy>arch:hasCopy</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasExtent>arch:hasExtent</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasOriginal>arch:hasOriginal</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasRelatedMaterial>arch:hasRelatedMaterial</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasUseCondition>arch:hasUseCondition</a><span class="cardinality">[0..n]</span>| <a href=#arch:isDescribedBy>arch:isDescribedBy</a><span class="cardinality">[0..n]</span>| <a href=#arch:isDirectlyIncludedIn>arch:isDirectlyIncludedIn</a><span class="cardinality">[0..1]</span></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasArchivalResource>arch:hasArchivalResource</a> | <a href=#arch:hasRelatedMaterial>arch:hasRelatedMaterial</a> | <a href=#arch:isDirectlyIncludedIn>arch:isDirectlyIncludedIn</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:accessConditionNote'>arch:accessConditionNote</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni aggiuntive riferite alle condizioni di fruizione.</li>
+<li><a href='#arch:accessConditionType'>arch:accessConditionType</a><span class="cardinality">[0..1]</span>(arch:code): Si segnala se sussistono particolari condizioni per la consultazione e fruizione della risorsa.</li>
+<li><a href='#arch:arrangementCriterion'>arch:arrangementCriterion</a><span class="cardinality">[0..1]</span>(xsd:string): Complesso delle operazioni necessarie per dare un'organizzazione sistematica alle risorse archivistiche sulla base di un principio teorico.</li>
+<li><a href='#arch:custodialHistory'>arch:custodialHistory</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni sulla storia dei materiali, per descrivere la proprietà intellettuale, la responsabilità e/o la custodia fisica, con i relativi cambi significativi ai fini dell'autenticità, dell'integrità e dell'interpretazione della documentazione.</li>
+<li><a href='#arch:extentNote'>arch:extentNote</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni aggiuntive alla consistenza.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:ArchivalResourceLevel' name='arch:ArchivalResourceLevel'>arch:ArchivalResourceLevel</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: LivelloDiDescrizione | en: ArchivalResourceLevel]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Concept' style=''>cross:Concept</a>
+<ul>
+<li><a href='#arch:ArchivalResourceLevel' style='font-weight: bold;'>arch:ArchivalResourceLevel</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Identifica il livello della gerarchia logica a cui corrisponde una descrizione archivistica (es. descrizione fino al livello del fondo/seri/sottoserie/etc.).</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Concept>cross:Concept</a></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasArchivalResourceLevel>arch:hasArchivalResourceLevel</a></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:AudioVisualItem' name='arch:AudioVisualItem'>arch:AudioVisualItem</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Audiovisivo | en: AudioVisualItem]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style=''>arch:Item</a>
+<ul>
+<li><a href='#arch:AudioVisualItem' style='font-weight: bold;'>arch:AudioVisualItem</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Registrazione di immagini in movimento, anche non accompagnate da suoni, realizzata su qualsiasi supporto e mediante qualsiasi tecnica, anche di animazione, con contenuto narrativo o documentaristico.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Binding' name='arch:Binding'>arch:Binding</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Legatura | en: Binding]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:Binding' style='font-weight: bold;'>arch:Binding</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Insieme delle operazioni e delle tecniche utilizzate per tenere insieme (rilegare) i documenti d’archivio, a scopo conservativo.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasBinding>arch:hasBinding</a></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:CarrierExtent' name='arch:CarrierExtent'>arch:CarrierExtent</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: UnitaDiCondizionamento | en: CarrierExtent]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:CarrierExtent' style='font-weight: bold;'>arch:CarrierExtent</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Contenitore fisico utilizzato per la conservazione e la protezione di una o più unità archivistiche o documentarie. Può assumere diverse forme (es. scatola, cartella, tubo, faldone) e ha una funzione sia conservativa che logistica, facilitando la gestione e la collocazione fisica dei documenti.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasCarrierExtent>arch:hasCarrierExtent</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:number'>arch:number</a><span class="cardinality">[0..1]</span>(xsd:int): Identificativo numerico, generalmente progressivo, assegnato all’unità di condizionamento per finalità gestionali, logistiche o di collocazione.</li>
+<li><a href='#arch:type'>arch:type</a><span class="cardinality">[0..1]</span>(arch:code): La tipologia dell’unità di condizionamento, indicando la forma o la struttura del contenitore (es. cartella, scatola, faldone, camicia, tubo).</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:CartographicItem' name='arch:CartographicItem'>arch:CartographicItem</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Cartografia | en: CartographicItem]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style=''>arch:Item</a>
+<ul>
+<li><a href='#arch:CartographicItem' style='font-weight: bold;'>arch:CartographicItem</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Documenti cartacei o su altro supporto (come tela, pergamena, plastica, supporti digitali, ecc.) che rappresentano graficamente e in scala porzioni di territorio, elementi geografici, confini, proprietà, infrastrutture o altri aspetti legati allo spazio fisico.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:documentState'>arch:documentState</a><span class="cardinality">[0..1]</span>(arch:code): La fase del processo di redazione di un documento cartografico.</li>
+<li><a href='#arch:grid'>arch:grid</a><span class="cardinality">[0..1]</span>(xsd:string): La presenza e il tipo di reticolo cartografico</li>
+<li><a href='#arch:latitude'>arch:latitude</a><span class="cardinality">[0..1]</span>(xsd:string): La latitudine massima della rappresentazione.</li>
+<li><a href='#arch:longitude'>arch:longitude</a><span class="cardinality">[0..1]</span>(xsd:string): La longitudine massima della rappresentazione.</li>
+<li><a href='#arch:mapLegend'>arch:mapLegend</a> (xsd:string): Il significato dei simboli, dei colori e degli stili usati per rappresentare i dati geografici sulla mappa.</li>
+<li><a href='#arch:orientation'>arch:orientation</a><span class="cardinality">[0..1]</span>(arch:code): L’orientamento della raffigurazione facendo riferimento ad eventuali simboli grafici presenti quali rose dei venti, freccia indicati il nord, aghi magnetici</li>
+<li><a href='#arch:printed'>arch:printed</a><span class="cardinality">[0..1]</span>(xsd:boolean): Indica se il documento cartografico è stato prodotto tramite un processo di stampa, come la litografia, la xilografia, la calcografia o altre tecniche di stampa.</li>
+<li><a href='#arch:projection'>arch:projection</a><span class="cardinality">[0..1]</span>(arch:code): La proiezione se compare nelle fonti prescritte.</li>
+<li><a href='#arch:scaleType'>arch:scaleType</a><span class="cardinality">[0..1]</span>(arch:code): Il tipo di scala numerica riportato sulla carta.</li>
+<li><a href='#arch:scaleValue'>arch:scaleValue</a><span class="cardinality">[0..1]</span>(xsd:string): L’indicazione numerica del rapporto tra le misure della rappresentazione grafica e le corrispondenti misure reali da rappresentare, espressa come frazione rappresentativa attraverso il rapporto (1:), facendo riferimento a quanto riportato sulla carta.</li>
+<li><a href='#arch:sheetNumber'>arch:sheetNumber</a><span class="cardinality">[0..1]</span>(xsd:string): Numero identificativo della tavola all'interno di un'opera cartografica composta o di un insieme di rappresentazioni contigue.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Extent' name='arch:Extent'>arch:Extent</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Consistenza | en: Extent]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:Extent' style='font-weight: bold;'>arch:Extent</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indica l’estensione quantitativa di una risorsa archivistica, espressa in unità fisiche o logiche di misura, allo scopo di fornire una valutazione della dimensione materiale o numerica del nucleo documentario descritto.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasType>arch:hasType</a><span class="cardinality">[0..1]</span></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasExtent>arch:hasExtent</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:quantity'>arch:quantity</a><span class="cardinality">[1..1]</span>(xsd:int): Misura della quantità di risorse archivistiche in riferimento alla tipologia.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Family' name='arch:Family'>arch:Family</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Famiglia | en: Family]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Agent' style=''>cross:Agent</a>
+<ul>
+<li><a href='#arch:Agent' style=''>arch:Agent</a>
+<ul>
+<li><a href='#arch:Family' style='font-weight: bold;'>arch:Family</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Family' style=''>cross:Family</a>
+<ul>
+<li><a href='#arch:Family' style='font-weight: bold;'>arch:Family</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>In senso ampio, comunità umana, diversamente caratterizzata nelle varie situazioni storiche e geografiche, ma in genere formata da persone legate fra loro da un rapporto di convivenza, di parentela, di affinità, che costituisce l’elemento fondamentale di ogni società, essendo essa finalizzata, nei suoi processi e nelle sue relazioni, alla perpetuazione della specie mediante la riproduzione.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(2)</small>:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a> | <a href=documentazione_grafo_cross2.1.html#cross:Family>cross:Family</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:nobleTitle'>arch:nobleTitle</a><span class="cardinality">[0..n]</span>(xsd:string): Il titolo nobiliare detenuto dalla famiglia, utile a definirne lo status giuridico o sociale nel contesto storico di riferimento.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:File' name='arch:File'>arch:File</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: UnitaArchvistica | en: File]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:File' style='font-weight: bold;'>arch:File</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Livello minimo di organizzazione e di descrizione di una risorsa archivistica, corrisponde ad un documento o a più documenti collegati fra loro da uno stesso vincolo.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasBinding>arch:hasBinding</a><span class="cardinality">[0..1]</span>| <a href=#arch:hasScriptType>arch:hasScriptType</a><span class="cardinality">[0..n]</span></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:classificationCode'>arch:classificationCode</a><span class="cardinality">[0..1]</span>(xsd:string): Codice numerico o alfanumerico attribuito ad una unità archivistica che ne indica la posizione logica nel contesto di un sistema di classificazione, in genere espresso mediante un titolario.</li>
+<li><a href='#arch:classificationNote'>arch:classificationNote</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni aggiuntive riferite alla classificazione.</li>
+<li><a href='#arch:finalArrangementNumber'>arch:finalArrangementNumber</a><span class="cardinality">[0..1]</span>(xsd:string): Numero attribuito all’unità archivistica nell’ambito dell’ordinamento definitivo del complesso documentario di appartenenza. È un identificativo stabile, assegnato in fase di riordino, che riflette la collocazione logica e/o fisica dell’unità.</li>
+<li><a href='#arch:physicalMedium'>arch:physicalMedium</a><span class="cardinality">[0..1]</span>(arch:code): Il materiale sul quale si registrano le scritture e, più genericamente, informazioni in forma analogica.</li>
+<li><a href='#arch:sequenceNumber'>arch:sequenceNumber</a><span class="cardinality">[1..1]</span>(xsd:int): Il numero di sequenza dell'unità archivistica, rispetto alla risorsa archivistica in cui è contenuta.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:FindingAid' name='arch:FindingAid'>arch:FindingAid</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: StrumentoDiRicerca | en: FindingAid]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:FindingAid' style='font-weight: bold;'>arch:FindingAid</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Strumento descrittivo di una risorsa archivistica, di tipologie diverse per livello e dettaglio descrittivo, che ha lo scopo di consentire la ricerca e l'accesso ai documenti.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:CulturalEntity>cross:CulturalEntity</a></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasFindingAid>arch:hasFindingAid</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:compilingMode'>arch:compilingMode</a><span class="cardinality">[0..1]</span>(arch:code): Le modalità con cui è stato redatto lo strumento.</li>
+<li><a href='#arch:contentDescription'>arch:contentDescription</a><span class="cardinality">[0..1]</span>(xsd:string): Indicazioni sul contenuto informativo e sulla struttura interna dello strumento di ricerca, come l’ordinamento, la presenza di indici, la suddivisione in sezioni, la profondità della descrizione e l’eventuale presenza di riferimenti incrociati.</li>
+<li><a href='#arch:externalDescription'>arch:externalDescription</a><span class="cardinality">[0..1]</span>(xsd:string): Indicazioni relative agli aspetti materiali e formali esterni dello strumento di ricerca, come il numero di pagine, le dimensioni, la presenza di copertina, di elementi decorativi o la modalità di rilegatura.</li>
+<li><a href='#arch:historicalNote'>arch:historicalNote</a><span class="cardinality">[0..1]</span>(xsd:string): Contiene informazioni storico-descrittive a supporto della comprensione dei contenuti e del contesto delle unità archivistiche descritte dallo strumento.</li>
+<li><a href='#arch:mediumType'>arch:mediumType</a><span class="cardinality">[0..1]</span>(arch:code): Il tipo di supporto materiale o digitale su cui lo strumento di ricerca è redatto o conservato.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:GraphicItem' name='arch:GraphicItem'>arch:GraphicItem</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Grafica | en: GraphicItem]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style=''>arch:Item</a>
+<ul>
+<li><a href='#arch:GraphicItem' style='font-weight: bold;'>arch:GraphicItem</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Documenti o supporti costituiti da rappresentazioni visive create attraverso tecniche grafiche (disegni, schizzi, illustrazioni, e altre forme di comunicazione visiva).</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:executionMode'>arch:executionMode</a><span class="cardinality">[0..n]</span>(arch:code): La metodologia di esecuzione utilizzata per la realizzazione del materiale grafico in oggetto.</li>
+<li><a href='#arch:scaleType'>arch:scaleType</a><span class="cardinality">[0..1]</span>(arch:code): Il tipo di scala numerica utilizzata per la realizzazione del materiale grafico.</li>
+<li><a href='#arch:scaleValue'>arch:scaleValue</a><span class="cardinality">[0..1]</span>(xsd:string): La scala numerica utilizzata per la realizzazione del materiale grafico.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:HistoricalOrInstitutionalContext' name='arch:HistoricalOrInstitutionalContext'>arch:HistoricalOrInstitutionalContext</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: ContestoStoricoInstituzionale | en: HistoricalOrInstitutionalContext]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:HistoricalOrInstitutionalContext' style='font-weight: bold;'>arch:HistoricalOrInstitutionalContext</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Circostanze storiche, politiche, economiche, sociali e giuridiche in cui si è sviluppata e ha operato un'istituzione (soggetto produttore) nel tempo.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasAssociatedContext>arch:hasAssociatedContext</a><span class="cardinality">[0..n]</span> | <a href=#arch:hasInstitutionalProfile>arch:hasInstitutionalProfile</a><span class="cardinality">[0..n]</span></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasAssociatedContext>arch:hasAssociatedContext</a> | <a href=#arch:hasHistoricalOrInstitutionalContext>arch:hasHistoricalOrInstitutionalContext</a></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:InstitutionalProfile' name='arch:InstitutionalProfile'>arch:InstitutionalProfile</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: ProfiloIstituzionale | en: InstitutionalProfile]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:InstitutionalProfile' style='font-weight: bold;'>arch:InstitutionalProfile</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Definizione dell'identità giuridica, delle funzioni, della struttura organizzativa e del contesto operativo di una specifica categoria di soggetto produttore.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasAssociatedProfile>arch:hasAssociatedProfile</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasHistoricalOrInstitutionalContext>arch:hasHistoricalOrInstitutionalContext</a><span class="cardinality">[0..n]</span></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasAssociatedProfile>arch:hasAssociatedProfile</a> | <a href=#arch:hasInstitutionalProfile>arch:hasInstitutionalProfile</a></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Item' name='arch:Item'>arch:Item</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: UnitaDocumentaria | en: Item]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style='font-weight: bold;'>arch:Item</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Unità archivistica composta da un solo documento che per diverse ragioni non si trova unito ad altri e dunque viene descritto individualmente.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasBinding>arch:hasBinding</a><span class="cardinality">[0..1]</span>| <a href=#arch:hasScriptType>arch:hasScriptType</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasSeal>arch:hasSeal</a><span class="cardinality">[0..n]</span></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:abstract'>arch:abstract</a><span class="cardinality">[0..1]</span>(xsd:string): Riassunto più o meno esteso del contenuto di un singolo documento, nel quale si riportano gli elementi indispensabili per riconoscerlo: data topica e cronica, nome dell’autore e del destinatario, nomi delle parti in causa, oggetto dell’atto.</li>
+<li><a href='#arch:classificationCode'>arch:classificationCode</a><span class="cardinality">[0..1]</span>(xsd:string): Codice numerico o alfanumerico attribuito ad una unità documentaria che ne indica la posizione logica nel contesto di un sistema di classificazione.</li>
+<li><a href='#arch:classificationNote'>arch:classificationNote</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni aggiuntive riferite alla classificazione.</li>
+<li><a href='#arch:documentaryFormType'>arch:documentaryFormType</a> <span class="cardinality">[0..1]</span>(xsd:string): La natura giuridica della documentazione.</li>
+<li><a href='#arch:finalArrangementNumber'>arch:finalArrangementNumber</a><span class="cardinality">[0..1]</span>(xsd:string): Numero attribuito all’unità documentaria nell’ambito dell’ordinamento definitivo, volto a identificarne univocamente la posizione all’interno della sequenza documentaria definita. Rappresenta un riferimento stabile e formalizzato, assegnato in fase di riordino.</li>
+<li><a href='#arch:physicalMedium'>arch:physicalMedium</a><span class="cardinality">[0..1]</span>(arch:code): Identifica il materiale sul quale si registrano le scritture e, più genericamente, informazioni in forma analogica.</li>
+<li><a href='#arch:sequenceNumber'>arch:sequenceNumber</a><span class="cardinality">[1..1]</span>(xsd:int): I numero di sequenza dell'unità documentaria rispetto alla risorsa archivistica in cui è contenuta.</li>
+<li><a href='#arch:transcription'>arch:transcription</a><span class="cardinality">[0..1]</span>(xsd:string): Il testo di un documento eventualente vagliato sulla base di uno o più testimoni.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Manuscript' name='arch:Manuscript'>arch:Manuscript</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Manoscritto | en: Manuscript]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style=''>arch:Item</a>
+<ul>
+<li><a href='#arch:Manuscript' style='font-weight: bold;'>arch:Manuscript</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Unità archivistica o documentaria compilata a mano</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:codicologicalNote'>arch:codicologicalNote</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni dettagliate riguardo alla natura, alla provenienza e alla descrizione di un manoscritto.</li>
+<li><a href='#arch:documentState'>arch:documentState</a><span class="cardinality">[0..1]</span>(arch:code): Lo stadio di redazione del materiale scritto.</li>
+<li><a href='#arch:explicit'>arch:explicit</a><span class="cardinality">[0..1]</span>(xsd:string): Formula o segmento di testo conclusivo di un documento, di un atto o di un manoscritto. Assieme all’incipit, è uno strumento essenziale per la descrizione bibliografica e archivistica di testi privi di titolo o con tradizione manoscritta incerta.</li>
+<li><a href='#arch:incipit'>arch:incipit</a><span class="cardinality">[0..1]</span>(xsd:string): Formula iniziale o primo segmento di testo con cui ha inizio un documento, un atto o un manoscritto. Costituisce un elemento identificativo importante, soprattutto nei casi in cui il testo non abbia un titolo formale o sia anonimo.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Organization' name='arch:Organization'>arch:Organization</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Organizzazione | en: Organization]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Agent' style=''>cross:Agent</a>
+<ul>
+<li><a href='#arch:Agent' style=''>arch:Agent</a>
+<ul>
+<li><a href='#arch:Organization' style='font-weight: bold;'>arch:Organization</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Organization' style=''>cross:Organization</a>
+<ul>
+<li><a href='#arch:Organization' style='font-weight: bold;'>arch:Organization</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Un insieme di persone organizzate in una comunità o in un'altra struttura sociale, commerciale o politica, anche legalmente riconosciuta in registri nazionali di riferimento. Le organizzazioni sono spesso scomponibili in strutture gerarchiche.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(2)</small>:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a> | <a href=documentazione_grafo_cross2.1.html#cross:Organization>cross:Organization</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasOrganizationType>arch:hasOrganizationType</a><span class="cardinality">[0..n]</span></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Parchment' name='arch:Parchment'>arch:Parchment</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Pergamena | en: Parchment]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style=''>arch:Item</a>
+<ul>
+<li><a href='#arch:Parchment' style='font-weight: bold;'>arch:Parchment</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Unità documentaria o codicologica caratterizzata dal supporto scrittorio in pergamena.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:codicologicalNote'>arch:codicologicalNote</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni dettagliate riguardo alla natura, alla provenienza e alla descrizione di una pergamena.</li>
+<li><a href='#arch:documentState'>arch:documentState</a><span class="cardinality">[0..1]</span>(arch:code): Lo stadio di redazione del materiale scritto.</li>
+<li><a href='#arch:parchmentNote'>arch:parchmentNote</a><span class="cardinality">[0..1]</span>(xsd:string): Trascrizione o descrizione della scritta presente sul dorso della pergamena, apposta in genere a scopo identificativo o di riferimento.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Person' name='arch:Person'>arch:Person</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Persona | en: Person]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Agent' style=''>cross:Agent</a>
+<ul>
+<li><a href='#arch:Agent' style=''>arch:Agent</a>
+<ul>
+<li><a href='#arch:Person' style='font-weight: bold;'>arch:Person</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Person' style=''>cross:Person</a>
+<ul>
+<li><a href='#arch:Person' style='font-weight: bold;'>arch:Person</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Un singolo essere umano che può essere vivo o morto. Non può essere immaginario. Secondo la definizione giuridica è ogni essere umano che assume, dal momento della nascita, lo stato di soggetto di diritto e come tale una capacità giuridica, ovvero la titolarità di diritti e doveri e l'assunzione di una posizione nelle situazioni giuridiche soggettive.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(2)</small>:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a> | <a href=documentazione_grafo_cross2.1.html#cross:Person>cross:Person</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:nobleTitle'>arch:nobleTitle</a><span class="cardinality">[0..n]</span>(xsd:string): Il titolo nobiliare detenuto dalla persona, utile a definirne lo status giuridico o sociale nel contesto storico di riferimento.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Photograph' name='arch:Photograph'>arch:Photograph</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Fotografia | en: Photograph]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:CulturalEntity' style=''>cross:CulturalEntity</a>
+<ul>
+<li><a href='#arch:ArchivalResource' style=''>arch:ArchivalResource</a>
+<ul>
+<li><a href='#arch:Item' style=''>arch:Item</a>
+<ul>
+<li><a href='#arch:Photograph' style='font-weight: bold;'>arch:Photograph</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Immagine riprodotta su un supporto fisico (carta o altri materiali), attraverso un processo di stampa.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Project' name='arch:Project'>arch:Project</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Progetto | en: Project]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:Project' style='font-weight: bold;'>arch:Project</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il contesto in cui sono state realizzate una o più attività su risorse archivistiche, come il riordino, la descrizione, il censimento, la digitalizzazione o altri interventi di natura tecnica, scientifica o gestionale.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasArchivalResource>arch:hasArchivalResource</a><span class="cardinality">[0..n]</span>| <a href=#arch:hasFindingAid>arch:hasFindingAid</a><span class="cardinality">[0..n]</span> | <a href=#arch:hasType>arch:hasType</a><span class="cardinality">[1..n]</span></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:historicalInformation'>arch:historicalInformation</a><span class="cardinality">[0..1]</span>(xsd:string): Note storiche su origine e realizzazione del progetto.</li>
+<li><a href='#arch:progressStatus'>arch:progressStatus</a><span class="cardinality">[0..1]</span>(xsd:string): Informazioni sommarie sullo stato di avanzamento.</li>
+<li><a href='#arch:projectDescription'>arch:projectDescription</a><span class="cardinality">[0..1]</span>(xsd:string): Descrizione sintetica del progetto culturale e delle risorse digitalizzate, delle condizioni di accesso e dell’ente detentore dei diritti.</li>
+<li><a href='#arch:purpose'>arch:purpose</a><span class="cardinality">[0..n]</span>(arch:code): La finalità e lo scopo del progetto.</li>
+<li><a href='#arch:techincalImplementation'>arch:techincalImplementation</a><span class="cardinality">[0..1]</span>(xsd:string): Descrizione della realizzazione tecnica, come software e standard utilizzati, formati, etc.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Publication' name='arch:Publication'>arch:Publication</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: RiferimentoBibliografico | en: Publication]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Reference' style=''>cross:Reference</a>
+<ul>
+<li><a href='#arch:Publication' style='font-weight: bold;'>arch:Publication</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Riferimento a fonti informative pubblicate (monografie, articoli, etc.), utilizzate a supporto della redazione di descrizioni di una risorsa archivistica.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Reference>cross:Reference</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:author'>arch:author</a><span class="cardinality">[1..1]</span> (xsd:string): Nome dell’autore principale del contributo o dell’opera bibliografica di riferimento.</li>
+<li><a href='#arch:bibliographicSpecification'>arch:bibliographicSpecification</a><span class="cardinality">[0..1]</span>(xsd:string): Ulteriori informazioni utili a qualificare il riferimento, come collane editoriali o annotazioni bibliografiche aggiuntive.</li>
+<li><a href='#arch:citationId'>arch:citationId</a><span class="cardinality">[1..1]</span>(xsd:string): Sigla o abbreviazione utilizzata per citare in forma breve il riferimento bibliografico nel corso della descrizione o in apparati correlati.</li>
+<li><a href='#arch:contributionTitle'>arch:contributionTitle</a><span class="cardinality">[0..1]</span>(xsd:string): Titolo del singolo contributo (articolo, saggio, capitolo) contenuto nell’opera bibliografica di riferimento.</li>
+<li><a href='#arch:editionLocation'>arch:editionLocation</a><span class="cardinality">[0..1]</span>(xsd:string): Luogo specifico in cui è avvenuta l’edizione dell’opera, se diverso dal luogo di pubblicazione.</li>
+<li><a href='#arch:editionNumber'>arch:editionNumber</a><span class="cardinality">[0..1]</span>(xsd:string): Numero identificativo dell’edizione dell’opera.</li>
+<li><a href='#arch:editionYear'>arch:editionYear</a><span class="cardinality">[1..1]</span>(xsd:string): Anno in cui è stata pubblicata l’edizione di riferimento dell’opera.</li>
+<li><a href='#arch:editor'>arch:editor</a><span class="cardinality">[0..1]</span>(xsd:string): Nome del curatore dell’opera, responsabile della selezione, organizzazione o commento dei contenuti, in particolare in opere collettive.</li>
+<li><a href='#arch:pageOrCatalogNumber'>arch:pageOrCatalogNumber</a><span class="cardinality">[0..1]</span>(xsd:string): Indicazione delle pagine in cui si trova il contributo oppure, nel caso di cataloghi, del numero identificativo del documento o oggetto descritto.</li>
+<li><a href='#arch:publicationLocation'>arch:publicationLocation</a><span class="cardinality">[0..1]</span> xsd:string): Città o località in cui è stata pubblicata l’opera bibliografica di riferimento.</li>
+<li><a href='#arch:publisher'>arch:publisher</a><span class="cardinality">[0..1]</span> (xsd:string): Nome dell’editore responsabile della pubblicazione dell’opera.</li>
+<li><a href='#arch:relatedTitle'>arch:relatedTitle</a><span class="cardinality">[0..1]</span>(xsd:string): Titolo di un’opera o contributo collegato a quello principale, utile a contestualizzare il riferimento bibliografico.</li>
+<li><a href='#arch:relatedTitleNote'>arch:relatedTitleNote</a><span class="cardinality">[0..1]</span>(xsd:string): Nota esplicativa relativa al titolo correlato, finalizzata a chiarirne la natura o la relazione con il contributo principale.</li>
+<li><a href='#arch:title'>arch:title</a><span class="cardinality">[1..1]</span>(xsd:string): Titolo dell’opera in cui è contenuto il contributo citato.</li>
+<li><a href='#arch:volume'>arch:volume</a><span class="cardinality">[0..1]</span>(xsd:string): Indicazione del volume in cui si trova il contributo citato, nel caso di opere in più volumi.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Regulation' name='arch:Regulation'>arch:Regulation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: FonteNormativa | en: Regulation]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Reference' style=''>cross:Reference</a>
+<ul>
+<li><a href='#arch:Regulation' style='font-weight: bold;'>arch:Regulation</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Insieme degli atti giuridici e amministrativi – come leggi, regolamenti, statuti, delibere, decreti o circolari – che attribuiscono competenze, funzioni e responsabilità a un ente, ufficio o soggetto produttore e ne determinano quindi il ruolo istituzionale, l'organizzazione e, di conseguenza, la tipologia di documentazione prodotta e conservata.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Reference>cross:Reference</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:actReference'>arch:actReference</a><span class="cardinality">[0..1]</span>(xsd:string): Gli estremi identificativi dell’atto normativo, quali numero, data e titolo.</li>
+<li><a href='#arch:actType'>arch:actType</a><span class="cardinality">[1..1]</span>(xsd:string): La tipologia dell’atto normativo (es. legge, decreto, regolamento).</li>
+<li><a href='#arch:annex'>arch:annex</a><span class="cardinality">[0..1]</span>(xsd:string): Riferisce a eventuali allegati, appendici o documenti connessi al testo normativo principale.</li>
+<li><a href='#arch:issuingAuthority'>arch:issuingAuthority</a><span class="cardinality">[1..n]</span> (xsd:string): L'ente o organo che ha emanato la normativa.</li>
+<li><a href='#arch:versionDetail'>arch:versionDetail</a><span class="cardinality">[0..n]</span>(xsd:string): La versione della normativa, utile in caso di modifiche o aggiornamenti successivi.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:ScriptType' name='arch:ScriptType'>arch:ScriptType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: TipoDiScrittura | en: ScriptType]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Concept' style=''>cross:Concept</a>
+<ul>
+<li><a href='#arch:ScriptType' style='font-weight: bold;'>arch:ScriptType</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Definisce la tipologia di scrittura, in senso storico, utilizzata per la redazione di risorsa archivistica.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Concept>cross:Concept</a></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasScriptType>arch:hasScriptType</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:scriptType'>arch:scriptType</a><span class="cardinality">[0..1]</span>(arch:code): Il tipo di scrittura utilizzato.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:Seal' name='arch:Seal'>arch:Seal</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: Sigillo | en: Seal]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:Seal' style='font-weight: bold;'>arch:Seal</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Impronta impressa su materiali diversi, derivata da matrici di materiali diversi, apposta o legata ad un documento a garanzia di autenticità, validità, integrità, da parte del suo autore giuridico</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasSeal>arch:hasSeal</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:material'>arch:material</a><span class="cardinality">[0..1]</span>(arch:code): Il materiale con cui è stato realizzato il sigillo.</li>
+<li><a href='#arch:sealingMethod'>arch:sealingMethod</a><span class="cardinality">[0..1]</span>(arch:code): Il modo e la posizione in cui è stato apposto il sigillo.</li>
+<li><a href='#arch:type'>arch:type</a><span class="cardinality">[0..1]</span>(arch:code): La conformazione fisica o tecnica del sigillo, specificando aspetti come la presenza di una o più facce, la modalità di impressione o apposizione e lo stato conservativo.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<div class='entity-div'>
+<h3 class='entity-section'>Nodo: <a href='#arch:UseCondition' name='arch:UseCondition'>arch:UseCondition</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: CondizioneDiUtilizzo | en: UseCondition]</span></h3>
+<hr/>
+<div class='tree-container'><div class='tree'>
+<ul>
+<li><a href='documentazione_grafo_cross2.1.html#cross:Entity' style=''>cross:Entity</a>
+<ul>
+<li><a href='#arch:UseCondition' style='font-weight: bold;'>arch:UseCondition</a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Termini e condizioni che regolano l'utilizzo di una risorsa archivistica.</p>
+</p>
+<p class='section-desc'><b>Sottonodo di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a></p>
+<p class='section-desc'><b>È nodo di partenza di:</b>
+<br/>
+<a href=#arch:hasType>arch:hasType</a><span class="cardinality">[0..1]</span></p>
+<p class='section-desc'><b>È nodo di arrivo di:</b>
+<br/>
+<a href=#arch:hasUseCondition>arch:hasUseCondition</a></p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:use'>arch:use</a><span class="cardinality">[0..1]</span>(xsd:string): Le modalità di utilizzo della risorsa.</li>
+</ul></p>
+</div>
+<hr class='margintop'/>
+<h1 class='margintop'><a name='objproperties'>&nbsp;</a>Archi</h1>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasArchivalResource' name='arch:hasArchivalResource'>arch:hasArchivalResource</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haRiferimentoArchivistico | en: hasArchivalResource]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una risorsa archivistica con il progetto a cui fa riferimento.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasArchivalResourceLevel' name='arch:hasArchivalResourceLevel'>arch:hasArchivalResourceLevel</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haLivelloDiDescrizione | en: hasArchivalResourceLevel]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che identifica il tipo di aggregazione che si sta descrivendo.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:ArchivalResourceLevel>arch:ArchivalResourceLevel</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasAssociatedAgent' name='arch:hasAssociatedAgent'>arch:hasAssociatedAgent</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haAgenteAssociatoConAgente | en: hasAssociatedAgent]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Specifica un legame tra due agenti, qualificato da una tipologia di relazione e, ove noto, delimitato da un intervallo temporale.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:endDate'>arch:endDate</a><span class="cardinality">[0..1]</span>(xsd:date): La fine dell’intervallo temporale in cui l’agente ha avuto una determinata associazione con un altro agente.</li>
+<li><a href='#arch:startDate'>arch:startDate</a><span class="cardinality">[0..1]</span>(xsd:date): L’inizio dell’intervallo temporale in cui l’agente ha avuto una determinata associazione con un altro agente.</li>
+<li><a href='#arch:time'>arch:time</a><span class="cardinality">[0..1]</span>(xsd:string): Il periodo di tempo espresso in stringa testuale in cui l’agente ha avuto una determinata associazione con un altro agente.</li>
+<li><a href='#arch:type (rel)'>arch:type (rel)</a><span class="cardinality">[0..1]</span>(xsd:string): Determina il tipo di associazione tra due agenti</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasAssociatedContext' name='arch:hasAssociatedContext'>arch:hasAssociatedContext</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haContestoAssociatoAContesto | en: hasAssociatedContext]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che associa un contesto storico istituzionale a un altro contesto connesso, evidenziando legami di continuità, dipendenza o sovraordinazione che ne influenzano l’evoluzione e il rapporto con le istituzioni (soggetti produttori).</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:HistoricalOrInstitutionalContext>arch:HistoricalOrInstitutionalContext</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:HistoricalOrInstitutionalContext>arch:HistoricalOrInstitutionalContext</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+
+<ul>
+<li><a href='#arch:endDate'>arch:endDate</a><span class="cardinality">[0..1]</span>(xsd:date): La fine dell’intervallo temporale in cui un contesto storico istituzionale è stato in relazione con un altro contesto storico istituzionale.</li>
+<li><a href='#arch:startDate'>arch:startDate</a><span class="cardinality">[0..1]</span>(xsd:date): L’inizio dell’intervallo temporale in cui un contesto storico istituzionale è stato in relazione con un altro contesto storico istituzionale.</li>
+<li><a href='#arch:time'>arch:time</a><span class="cardinality">[0..1]</span>(xsd:string): Il periodo di tempo espresso in stringa testuale in cui un contesto storico istituzionale è stato in relazione con un altro contesto storico istituzionale.</li>
+<li><a href='#arch:type (rel)'>arch:type (rel)</a><span class="cardinality">[0..1]</span>(arch:code): Determina il tipo di relazione tra due contesti storico istituzionali.</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasAssociatedProfile' name='arch:hasAssociatedProfile'>arch:hasAssociatedProfile</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haProfiloAssociatoAProfilo | en: hasAssociatedProfile]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione tra profili istituzionali che evidenzia connessioni tra strutture organizzative o funzioni di soggetti produttori, ad esempio in caso di riforme, fusioni o trasformazioni istituzionali.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:InstitutionalProfile>arch:InstitutionalProfile</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+
+<a href=#arch:InstitutionalProfile>arch:InstitutionalProfile</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:endDate'>arch:endDate</a><span class="cardinality">[0..1]</span>(xsd:date): La fine dell’intervallo temporale in cui un profilo istituzionale è stato in relazione con un altro profilo istituzionale.</li>
+<li><a href='#arch:startDate'>arch:startDate</a><span class="cardinality">[0..1]</span>(xsd:date): L’inizio dell’intervallo temporale in cui un profilo istituzionale è stato in relazione con un altro profilo istituzionale.</li>
+<li><a href='#arch:time'>arch:time</a><span class="cardinality">[0..1]</span>(xsd:string): Il periodo di tempo espresso in stringa testuale in cui un profilo istituzionale è stato in relazione con un altro profilo istituzionale.</li>
+<li><a href='#arch:type (rel)'>arch:type (rel)</a><span class="cardinality">[0..1]</span>(arch:code): Determina il tipo di relazione tra due profili istituzionali.</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasBinding' name='arch:hasBinding'>arch:hasBinding</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haLegatura | en: hasBinding]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che identifica il modo in cui una unità archivistica/documentaria è rilegata e l’aspetto esteriore del confezionamento.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:Binding>arch:Binding</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasCarrierExtent' name='arch:hasCarrierExtent'>arch:hasCarrierExtent</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haUnitaDiCondizionamento | en: hasCarrierExtent]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che identifica il contenitore materiale entro cui una risorsa archivitica è conservata e tenuta insieme.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:CarrierExtent>arch:CarrierExtent</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasCopy' name='arch:hasCopy'>arch:hasCopy</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haCopia | en: hasCopy]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il legame tra una risorsa archivistica e una sua copia, intesa come riproduzione non originale della stessa.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a> | <a href=documentazione_grafo_cross2.1.html#cross:CulturalEntity>cross:CulturalEntity</a></p>
+
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p></div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasExtent' name='arch:hasExtent'>arch:hasExtent</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haConsistenza | en: hasExtent]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che consente di quantificare ciò che costituisce una risorsa archivistica.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:Extent>arch:Extent</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p></div>
+</div>
+
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasFindingAid' name='arch:hasFindingAid'>arch:hasFindingAid</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haStrumentoDiRicerca | en: hasFindingAid]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che collega uno strumento di ricerca con il progetto a cui fa riferimento.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:FindingAid>arch:FindingAid</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p></div>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasHistoricalOrInstitutionalContext' name='arch:hasHistoricalOrInstitutionalContext'>arch:hasHistoricalOrInstitutionalContext</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haContestoStoricoIstituzionale | en: hasHistoricalOrInstitutionalContext]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che associa un agente o un profilo istituzionale a un contesto storico-istituzionale, fornendo informazioni sul periodo, le condizioni e i fattori che hanno influenzato le attività, l’identità e l’evoluzione dell’agente o del profilo.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a> | <a href=#arch:InstitutionalProfile>arch:InstitutionalProfile</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:HistoricalOrInstitutionalContext>arch:HistoricalOrInstitutionalContext</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+
+<ul>
+<li><a href='#arch:endDate'>arch:endDate</a><span class="cardinality">[0..1]</span>(xsd:date): La fine dell’intervallo temporale in cui un agente o profilo istituzionale ha operato o si è sviluppato all'interno di un determinato contesto storico istituzionale.</li>
+<li><a href='#arch:startDate'>arch:startDate</a><span class="cardinality">[0..1]</span> (xsd:date): L’inizio dell’intervallo temporale in cui un agente o un profilo istituzionale ha operato o si è sviluppato all'interno di un determinato contesto storico istituzionale.</li>
+<li><a href='#arch:time'>arch:time</a><span class="cardinality">[0..1]</span>(xsd:string): Il periodo di tempo espresso in stringa testuale in cui un agente o un profilo istituzionale ha operato o si è sviluppato all'interno di un determinato contesto storico istituzionale.</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasInstitutionalProfile' name='arch:hasInstitutionalProfile'>arch:hasInstitutionalProfile</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haProfiloIstituzionale | en: hasInstitutionalProfile]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che associa un agente o un contesto storico-istituzionale a un profilo istituzionale, descrivendo l’identità giuridica, le funzioni e la struttura organizzativa dell’agente o collocando il profilo in un contesto storico o istituzionale.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a> | <a href=#arch:HistoricalOrInstitutionalContext>arch:HistoricalOrInstitutionalContext</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:InstitutionalProfile>arch:InstitutionalProfile</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:endDate'>arch:endDate</a><span class="cardinality">[0..1]</span>(xsd:date): La fine dell’intervallo temporale in cui un agente o un contesto storico istituzionale è stato in relazione con o ha avuto un determinato profilo istituzionale.</li>
+<li><a href='#arch:startDate'>arch:startDate</a><span class="cardinality">[0..1]</span>(xsd:date): L’inizio dell’intervallo temporale in cui un agente o un contesto storico istituzionale è stato in relazione con o ha avuto un determinato profilo istituzionale.</li>
+<li><a href='#arch:time'>arch:time</a><span class="cardinality">[0..1]</span>(xsd:string): Il periodo di tempo espresso in stringa testuale in cui un agente o contesto storico istituzionale è stato in relazione con o ha auvto un determinato profilo istituzionale.</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasOrganizationType' name='arch:hasOrganizationType'>arch:hasOrganizationType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haTipologiaEnte | en: hasOrganizationType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La tipologia giuridica o funzionale dell’organizzazione, secondo una classificazione predefinita degli enti.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:hasType>cross:hasType</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Organization>arch:Organization</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Type>cross:Type</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:endDate'>arch:endDate</a><span class="cardinality">[0..1]</span>(xsd:date): La fine dell’intervallo temporale in cui un ente ha avuto una determinata tipologia.</li>
+<li><a href='#arch:startDate'>arch:startDate</a><span class="cardinality">[0..1]</span>(xsd:date): L’inizio dell’intervallo temporale in cui un ente ha avuto una determinata tipologia.</li>
+<li><a href='#arch:time'>arch:time</a><span class="cardinality">[0..1]</span>(xsd:string): Il periodo di tempo espresso in stringa testuale in cui un ente ha avuto una determinata tipologia.</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasOriginal' name='arch:hasOriginal'>arch:hasOriginal</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haOriginale | en: hasOriginal]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il legame tra una copia e il suo corrispondente originale, inteso come versione autentica e primigenia della risorsa archivistica.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a> | <a href=documentazione_grafo_cross2.1.html#cross:CulturalEntity>cross:CulturalEntity</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasRelatedMaterial' name='arch:hasRelatedMaterial'>arch:hasRelatedMaterial</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haDocumentazioneCollegata | en: hasRelatedMaterial]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una risorsa archivistica a una serie di documenti, registrazioni o materiali associati alla risorsa in oggetto.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a> | <a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+<p class='section-desc'><b>Attributi:</b>
+<br/>
+<ul>
+<li><a href='#arch:relationSpecification'>arch:relationSpecification</a><span class="cardinality">[0..1]</span>(xsd:string): Qualifica la natura del collegamento con la documentazione associata, specificandone il tipo.</li>
+</ul>
+</p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasScriptType' name='arch:hasScriptType'>arch:hasScriptType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haTipoDiScrittura | en: hasScriptType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che consente di specificare il tipo di scrittura dell'unità archivistica/documentaria.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:ScriptType>arch:ScriptType</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasSeal' name='arch:hasSeal'>arch:hasSeal</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haSigillo | en: hasSeal]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una unità documentarira con il sigillo.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:Seal>arch:Seal</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasType' name='arch:hasType'>arch:hasType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haTipologia | en: hasType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che associa un’entità a una tipologia o categoria rilevante al suo contesto: condizioni di utilizzo per UseCondition, unità di misura della consistenza materiale per Extent, classificazione del progetto per Project, e tipo di fonte bibliografica per Publication.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:hasType>cross:hasType</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:UseCondition>arch:UseCondition</a> | <a href=#arch:Extent>arch:Extent</a> | <a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Type>cross:Type</a></p>
+          <p class="section-desc">
+            <b>Obbligatorietà:</b> - Variabile (Si rimanda alle specifiche del singolo nodo)
+            <br/>
+            <b>Cardinalità:</b> - Variabile (Si rimanda alle specifiche del singolo nodo)
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:hasUseCondition' name='arch:hasUseCondition'>arch:hasUseCondition</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: haCondizioneDiUtilizzo | en: hasUseCondition]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che definisce i requisiti e le normative che regolano l'utilizzo di documenti e materiali conservati in archivi. Queste condizioni possono variare a seconda del tipo di archivio (pubblico o privato), della natura dei documenti (sensibili, riservati, di interesse pubblico) e delle normative vigenti in materia di protezione dei dati e di diritto d'autore.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:UseCondition>arch:UseCondition</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:isDescribedBy' name='arch:isDescribedBy'>arch:isDescribedBy</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: eDescrittoDa | en: isDescribedBy]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una risorsa archivistica con lo strumento di ricerca con cui viene descritta.</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:Entity>cross:Entity</a> | <a href=#arch:FindindAid>arch:FindindAid</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Arco: <a href='#arch:isDirectlyIncludedIn' name='arch:isDirectlyIncludedIn'>arch:isDirectlyIncludedIn</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: eDirettamenteInclusoIn | en: isDirectlyIncludedIn]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Relazione che collega una risorsa archivistica ad un’altra risorsa archivistica di livello superiore, secondo una relazione di contenimento gerarchico nell’ambito della struttura del complesso documentario. La relazione esprime un legame strutturale e logico tra entità archivistiche, indipendentemente dalla loro natura (es. un fondo incluso in un complesso di fondi, una serie inclusa in un fondo, un’unità documentaria inclusa in una unità archivistica, etc.).</p>
+</p>
+<p class='section-desc'><b>Sottoarco di <small>(1)</small>:</b>
+<br/>
+<a href=documentazione_grafo_cross2.1.html#cross:isRelatedTo>cross:isRelatedTo</a></p>
+<p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Ha nodo di arrivo:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<hr class='margintop'/>
+<h1 class='margintop'><a name='dataproperties'>&nbsp;</a>Attributi dei Nodi</h1>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:abstract' name='arch:abstract'>arch:abstract</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: regesto | en: abstract]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Riassunto più o meno esteso del contenuto di un singolo documento, nel quale si riportano gli elementi indispensabili per riconoscerlo: data topica e cronica, nome dell’autore e del destinatario, nomi delle parti in causa, oggetto dell’atto.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:accessConditionNote' name='arch:accessConditionNote'>arch:accessConditionNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: notaCondizioneDiFruizione | en: accessConditionNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni aggiuntive riferite alle condizioni di fruizione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:accessConditionType' name='arch:accessConditionType'>arch:accessConditionType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: condizioneDiFruizione | en: accessConditionType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Si segnala se sussistono particolari condizioni per la consultazione e fruizione della risorsa.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:accruals' name='arch:accruals'>arch:accruals</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: incrementiPrevisti | en: accruals]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indica se sono previsti ulteriori versamenti o incrementi documentari nel tempo.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalRecordSet>arch:ArchivalRecordSet</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:acquisitionInformation' name='arch:acquisitionInformation'>arch:acquisitionInformation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: modalitaAcquisizioneVersamento | en: acquisitionInformation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Le modalità attraverso cui il complesso è stato acquisito o versato all'istituto conservatore (es. versamento, dono, deposito, acquisto).</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalRecordSet>arch:ArchivalRecordSet</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:acquisitionManagementPolicy' name='arch:acquisitionManagementPolicy'>arch:acquisitionManagementPolicy</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: politicheGestioneAcquisizione | en: acquisitionManagementPolicy]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Le politiche adottate dall’agente per la gestione e l’acquisizione delle risorse archivistiche o documentarie.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:actReference' name='arch:actReference'>arch:actReference</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: estremiAtto | en: actReference]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Gli estremi identificativi dell’atto normativo, quali numero, data e titolo.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Regulation>arch:Regulation</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:actType' name='arch:actType'>arch:actType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipologia | en: actType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La tipologia dell’atto normativo (es. legge, decreto, regolamento).</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Regulation>arch:Regulation</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:annex' name='arch:annex'>arch:annex</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: annesso | en: annex]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Riferisce a eventuali allegati, appendici o documenti connessi al testo normativo principale.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Regulation>arch:Regulation</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:appraisalInformation' name='arch:appraisalInformation'>arch:appraisalInformation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: procedureTempiCriteriScarto | en: appraisalInformation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Le informazioni relative ai criteri, ai tempi e alle procedure applicati per la selezione e lo scarto della documentazione del complesso archivistico.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalRecordSet>arch:ArchivalRecordSet</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:archivalHeritage' name='arch:archivalHeritage'>arch:archivalHeritage</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: patrimonio | en: archivalHeritage]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni relative al patrimonio (materiale o immateriale) posseduto, gestito o prodotto dall’agente.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Agent>arch:Agent</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:arrangementCriterion' name='arch:arrangementCriterion'>arch:arrangementCriterion</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: criterioOrdinamento | en: arrangementCriterion]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Complesso delle operazioni necessarie per dare un'organizzazione sistematica alle risorse archivistiche sulla base di un principio teorico.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:author' name='arch:author'>arch:author</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: autore | en: author]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Nome dell’autore principale del contributo o dell’opera bibliografica di riferimento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:bibliographicSpecification' name='arch:bibliographicSpecification'>arch:bibliographicSpecification</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: specifiche | en: bibliographicSpecification]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Ulteriori informazioni utili a qualificare il riferimento, come collane editoriali o annotazioni bibliografiche aggiuntive.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:citationId' name='arch:citationId'>arch:citationId</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: siglaCitazione | en: citationId]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Sigla o abbreviazione utilizzata per citare in forma breve il riferimento bibliografico nel corso della descrizione o in apparati correlati.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:classificationCode' name='arch:classificationCode'>arch:classificationCode</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: codiceClassificazione, classificazione | en: classificationCode]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Codice numerico o alfanumerico che identifica la posizione logica di un complesso, unità archivistica o documentaria all’interno di un sistema di classificazione archivistica, generalmente definito da un titolario o schema gerarchico/tematico.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalRecordSet>arch:ArchivalRecordSet</a> | <a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:classificationNote' name='arch:classificationNote'>arch:classificationNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: noteClassificazione, specificaClassificazione, qualficaClassificazione | en: classificationNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni o dettagli supplementari relativi alla classificazione archivistica di un complesso, unità o documento, comprese eventuali articolazioni interne, codifiche o annotazioni specifiche.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalRecordSet>arch:ArchivalRecordSet</a> | <a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:codicologicalNote' name='arch:codicologicalNote'>arch:codicologicalNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: notaArchivisticoCodicologica | en: codicologicalNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni dettagliate riguardo alla natura, alla provenienza e alla descrizione di una pergamena/manoscritto.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Manuscript>arch:Manuscript</a> | <a href=#arch:Parchment>arch:Parchment</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:compilingMode' name='arch:compilingMode'>arch:compilingMode</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: modalitaDiRedazione | en: compilingMode]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Le modalità con cui è stato redatto lo strumento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:FindingAid>arch:FindingAid</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:contentDescription' name='arch:contentDescription'>arch:contentDescription</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: descrizioneIntrinseca | en: contentDescription]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indicazioni sul contenuto informativo e sulla struttura interna dello strumento di ricerca, come l’ordinamento, la presenza di indici, la suddivisione in sezioni, la profondità della descrizione e l’eventuale presenza di riferimenti incrociati.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:FindingAid>arch:FindingAid</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:contributionTitle' name='arch:contributionTitle'>arch:contributionTitle</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: titoloContributo | en: contributionTitle]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Titolo del singolo contributo (articolo, saggio, capitolo) contenuto nell’opera bibliografica di riferimento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:custodialHistory' name='arch:custodialHistory'>arch:custodialHistory</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: storiaArchivistica | en: custodialHistory]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni sulla storia dei materiali, per descrivere la proprietà intellettuale, la responsabilità e/o la custodia fisica, con i relativi cambi significativi ai fini dell'autenticità, dell'integrità e dell'interpretazione della documentazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:documentState' name='arch:documentState'>arch:documentState</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: stadioDelDocumento | en: documentState]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Fase o stato del processo di redazione di un documento, che ne descrive il livello di sviluppo o completamento, indipendentemente dal tipo di supporto (manoscritto, pergamena o rappresentazione cartografica).</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a> | <a href=#arch:Manuscript>arch:Manuscript</a> | <a href=#arch:Parchment>arch:Parchment</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:documentaryFormType' name='arch:documentaryFormType'>arch:documentaryFormType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipologiaDocumentaria | en: documentaryFormType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La natura giuridica della documentazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:editionLocation' name='arch:editionLocation'>arch:editionLocation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: luogoDiEdizione | en: editionLocation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Luogo specifico in cui è avvenuta l’edizione dell’opera, se diverso dal luogo di pubblicazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:editionNumber' name='arch:editionNumber'>arch:editionNumber</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: numeroDiEdizione | en: editionNumber]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Numero identificativo dell’edizione dell’opera.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:editionYear' name='arch:editionYear'>arch:editionYear</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: annoDiEdizione | en: editionYear]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Anno in cui è stata pubblicata l’edizione di riferimento dell’opera.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:editor' name='arch:editor'>arch:editor</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: curatore | en: editor]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Nome del curatore dell’opera, responsabile della selezione, organizzazione o commento dei contenuti, in particolare in opere collettive.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:executionMode' name='arch:executionMode'>arch:executionMode</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: esecuzione | en: executionMode]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La metodologia di esecuzione utilizzata per la realizzazione del materiale grafico in oggetto.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:GraphicItem>arch:GraphicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p>
+
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:explicit' name='arch:explicit'>arch:explicit</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: explicit | en: explicit]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Formula o segmento di testo conclusivo di un documento, di un atto o di un manoscritto. Assieme all’incipit, è uno strumento essenziale per la descrizione bibliografica e archivistica di testi privi di titolo o con tradizione manoscritta incerta.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Manuscript>arch:Manuscript</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:extentInMeters' name='arch:extentInMeters'>arch:extentInMeters</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: consistenzaMetriLineari | en: extentInMeters]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Estensione fisica del complesso archivistico espressa in metri lineari di scaffalatura, utilizzata per quantificare lo spazio occupato dalla documentazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalRecordSet>arch:ArchivalRecordSet</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:extentNote' name='arch:extentNote'>arch:extentNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: noteConsistenza | en: extentNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni aggiuntive alla consistenza.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ArchivalResource>arch:ArchivalResource</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:externalDescription' name='arch:externalDescription'>arch:externalDescription</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: descrizioneEstrinseca | en: externalDescription]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indicazioni relative agli aspetti materiali e formali esterni dello strumento di ricerca, come il numero di pagine, le dimensioni, la presenza di copertina, di elementi decorativi o la modalità di rilegatura.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:FindingAid>arch:FindingAid</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:finalArrangementNumber' name='arch:finalArrangementNumber'>arch:finalArrangementNumber</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: numeroOrdinamentoDefinitivo | en: finalArrangementNumber]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Numero assegnato all’unità documentaria o archivistica nell’ambito dell’ordinamento definitivo del complesso di appartenenza. Funziona come identificativo stabile e formalizzato, che riflette la collocazione logica e/o fisica dell’unità all’interno della sequenza documentaria.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:grid' name='arch:grid'>arch:grid</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: reticolo | en: grid]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La presenza e il tipo di reticolo cartografico</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+            <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:historicalInformation' name='arch:historicalInformation'>arch:historicalInformation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: noteStoriche | en: historicalInformation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Note storiche su origine e realizzazione del progetto.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <p class="section-desc">
+            <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:historicalNote' name='arch:historicalNote'>arch:historicalNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: noteStoricoDescrittive | en: historicalNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Contiene informazioni storico-descrittive a supporto della comprensione dei contenuti e del contesto delle unità archivistiche descritte dallo strumento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:FindingAid>arch:FindingAid</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:incipit' name='arch:incipit'>arch:incipit</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: incipit | en: incipit]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Formula iniziale o primo segmento di testo con cui ha inizio un documento, un atto o un manoscritto. Costituisce un elemento identificativo importante, soprattutto nei casi in cui il testo non abbia un titolo formale o sia anonimo.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Manuscript>arch:Manuscript</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p>
+<b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:issuingAuthority' name='arch:issuingAuthority'>arch:issuingAuthority</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: autoritaEmittente | en: issuingAuthority]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>L'ente o organo che ha emanato la normativa.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Regulation>arch:Regulation</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p><b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..*
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:latitude' name='arch:latitude'>arch:latitude</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: latitudine | en: latitude]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La latitudine massima della rappresentazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p><b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:longitude' name='arch:longitude'>arch:longitude</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: longitudine | en: longitude]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La longitudine massima della rappresentazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:mapLegend' name='arch:mapLegend'>arch:mapLegend</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: legenda | en: mapLegend]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il significato dei simboli, dei colori e degli stili usati per rappresentare i dati geografici sulla mappa.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:material' name='arch:material'>arch:material</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: materiale | en: material]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il materiale con cui è stato realizzato il sigillo.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Seal>arch:Seal</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:mediumType' name='arch:mediumType'>arch:mediumType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipoSupporto | en: mediumType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il tipo di supporto materiale o digitale su cui lo strumento di ricerca è redatto o conservato.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:FindingAid>arch:FindingAid</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:nobleTitle' name='arch:nobleTitle'>arch:nobleTitle</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: titoloNobiliare | en: nobleTitle]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il titolo nobiliare detenuto dalla persona/famiglia, utile a definirne lo status giuridico o sociale nel contesto storico di riferimento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Family>arch:Family</a> | <a href=#arch:Person>arch:Person</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:number' name='arch:number'>arch:number</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: numero | en: number]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Identificativo numerico, generalmente progressivo, assegnato all’unità di condizionamento per finalità gestionali, logistiche o di collocazione.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CarrierExtent>arch:CarrierExtent</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:int'>xsd:int</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:orientation' name='arch:orientation'>arch:orientation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: orientamento | en: orientation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>L’orientamento della raffigurazione facendo riferimento ad eventuali simboli grafici presenti quali rose dei venti, freccia indicati il nord, aghi magnetici</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:pageOrCatalogNumber' name='arch:pageOrCatalogNumber'>arch:pageOrCatalogNumber</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: pagineONumeroCatalogo | en: pageOrCatalogNumber]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indicazione delle pagine in cui si trova il contributo oppure, nel caso di cataloghi, del numero identificativo del documento o oggetto descritto.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:parchmentNote' name='arch:parchmentNote'>arch:parchmentNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: notaDorsale | en: parchmentNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Trascrizione o descrizione della scritta presente sul dorso della pergamena, apposta in genere a scopo identificativo o di riferimento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Parchment>arch:Parchment</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:physicalMedium' name='arch:physicalMedium'>arch:physicalMedium</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: supportoFisico | en: physicalMedium]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il materiale sul quale si registrano le scritture e, più genericamente, informazioni in forma analogica.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:physicalMedium ' name='arch:physicalMedium '>arch:physicalMedium </a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: supportoFisico | en: physicalMedium ]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il materiale sul quale si registrano le scritture e, più genericamente, informazioni in forma analogica.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+</p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:printed' name='arch:printed'>arch:printed</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: aStampa | en: printed]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indica se il documento cartografico è stato prodotto tramite un processo di stampa, come la litografia, la xilografia, la calcografia o altre tecniche di stampa.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:boolean'>xsd:boolean</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:progressStatus' name='arch:progressStatus'>arch:progressStatus</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: statoDiAvanzamento | en: progressStatus]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Informazioni sommarie sullo stato di avanzamento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:projectDescription' name='arch:projectDescription'>arch:projectDescription</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: progettoERisorseDigitalizzate | en: projectDescription]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Descrizione sintetica del progetto culturale e delle risorse digitalizzate, delle condizioni di accesso e dell’ente detentore dei diritti.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:projection' name='arch:projection'>arch:projection</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: proiezione | en: projection]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La proiezione se compare nelle fonti prescritte.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:publicationLocation' name='arch:publicationLocation'>arch:publicationLocation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: luogoDiPubblicazione | en: publicationLocation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Città o località in cui è stata pubblicata l’opera bibliografica di riferimento.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:publisher' name='arch:publisher'>arch:publisher</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: editore | en: publisher]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Nome dell’editore responsabile della pubblicazione dell’opera.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:purpose' name='arch:purpose'>arch:purpose</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: finalitaProgetto | en: purpose]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La finalità e lo scopo del progetto.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:quantity' name='arch:quantity'>arch:quantity</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: quantità | en: quantity]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Misura della quantità di risorse archivistiche in riferimento alla tipologia.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Extent>arch:Extent</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:int'>xsd:int</a></p> <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:relatedTitle' name='arch:relatedTitle'>arch:relatedTitle</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: titoloCorrelato | en: relatedTitle]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Titolo di un’opera o contributo collegato a quello principale, utile a contestualizzare il riferimento bibliografico.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:relatedTitleNote' name='arch:relatedTitleNote'>arch:relatedTitleNote</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: notaTitoloCorrelato | en: relatedTitleNote]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Nota esplicativa relativa al titolo correlato, finalizzata a chiarirne la natura o la relazione con il contributo principale.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:scaleType' name='arch:scaleType'>arch:scaleType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: scalaNumerica | en: scaleType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Tipo o categoria della scala numerica associata alla rappresentazione grafica o cartografica, quale indicata sul supporto o utilizzata per la sua realizzazione (ad es. grande/piccola scala, rapporto 1:n).
+Per i CartoGraphicItem il valore corrisponde al tipo di scala riportato sul documento cartografico</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a> | <a href=#arch:GraphicItem>arch:GraphicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:scaleValue' name='arch:scaleValue'>arch:scaleValue</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipoScalaNumerica | en: scaleValue]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Valore numerico che rappresenta il rapporto di scala tra le misure della rappresentazione grafica e quelle reali, espresso come frazione del tipo 1:n, utilizzato per la realizzazione e l’interpretazione del materiale grafico o cartografico.
+Per CartoGraphicItem coincide con la scala cartografica.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a> | <a href=#arch:GraphicItem>arch:GraphicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:scriptType' name='arch:scriptType'>arch:scriptType</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipo | en: scriptType]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il tipo di scrittura utilizzato.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:ScriptType>arch:ScriptType</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:sealingMethod' name='arch:sealingMethod'>arch:sealingMethod</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: apposizione | en: sealingMethod]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il modo e la posizione in cui è stato apposto il sigillo.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Seal>arch:Seal</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:sequenceNumber' name='arch:sequenceNumber'>arch:sequenceNumber</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: numeroSequenza | en: sequenceNumber]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il numero di sequenza dell'unità archivistica/documentaria, rispetto alla risorsa archivistica in cui è contenuta.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:File>arch:File</a> | <a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:int'>xsd:int</a></p> <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:sheetNumber' name='arch:sheetNumber'>arch:sheetNumber</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: numeroTavola | en: sheetNumber]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Numero identificativo della tavola all'interno di un'opera cartografica composta o di un insieme di rappresentazioni contigue.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CartographicItem>arch:CartographicItem</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:techincalImplementation' name='arch:techincalImplementation'>arch:techincalImplementation</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: realizzazioneTecnica | en: techincalImplementation]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Descrizione della realizzazione tecnica, come software e standard utilizzati, formati, etc.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Project>arch:Project</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:title' name='arch:title'>arch:title</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: titoloLibroORivista | en: title]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Titolo dell’opera in cui è contenuto il contributo citato.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> Sì
+            <br/>
+            <b>Cardinalità:</b> 1..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:transcription' name='arch:transcription'>arch:transcription</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: trascrizione | en: transcription]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il testo di un documento eventualente vagliato sulla base di uno o più testimoni.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Item>arch:Item</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:type' name='arch:type'>arch:type</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipo | en: type]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Tipologia o conformazione dell’oggetto, descrivendo la forma, la struttura o le caratteristiche fisiche e tecniche. Per le unità di condizionamento (CarrierExtent) indica la forma del contenitore (es. cartella, scatola, faldone, camicia, tubo), mentre per i sigilli (Seal) specifica aspetti come la presenza di una o più facce, la modalità di impressione o apposizione e lo stato conservativo.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:CarrierExtent>arch:CarrierExtent</a> | <a href=#arch:Seal>arch:Seal</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#arch:code'>arch:code</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:use' name='arch:use'>arch:use</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: utilizzo | en: use]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Le modalità di utilizzo della risorsa.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:UseCondition>arch:UseCondition</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:versionDetail' name='arch:versionDetail'>arch:versionDetail</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: versione | en: versionDetail]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La versione della normativa, utile in caso di modifiche o aggiornamenti successivi.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Regulation>arch:Regulation</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..n
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:volume' name='arch:volume'>arch:volume</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: volume | en: volume]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Indicazione del volume in cui si trova il contributo citato, nel caso di opere in più volumi.</p>
+</p><p class='section-desc'><b>Ha nodo di partenza:</b>
+<br/>
+<a href=#arch:Publication>arch:Publication</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<hr class='margintop'/>
+<h1 class='margintop'><a name='datarelproperties'>&nbsp;</a>Attributi degli Archi</h1>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:endDate' name='arch:endDate'>arch:endDate</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: dataFine | en: endDate]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>La fine dell’intervallo temporale in cui si verificata la relazione.</p>
+</p><p class='section-desc'><b>Ha relazione di partenza:</b>
+<br/>
+<a href=#arch:hasAssociatedAgent>arch:hasAssociatedAgent</a> | <a href=#arch:hasAssociatedContext>arch:hasAssociatedContext</a> | <a href=#arch:hasAssociatedProfile>arch:hasAssociatedProfile</a> | <a href=#arch:hasHistoricalOrInstitutionalContext>arch:hasHistoricalOrInstitutionalContext</a> | <a href=#arch:hasInstitutionalProfile>arch:hasInstitutionalProfile</a> | <a href=#arch:hasOrganizationType>arch:hasOrganizationType</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:date'>xsd:date</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:relationSpecification' name='arch:relationSpecification'>arch:relationSpecification</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: qualifica | en: relationSpecification]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Qualifica la natura del collegamento con la documentazione associata, specificandone il tipo.</p>
+</p><p class='section-desc'><b>Ha relazione di partenza:</b>
+<br/>
+<a href=#arch:hasRelatedMaterial>arch:hasRelatedMaterial</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:startDate' name='arch:startDate'>arch:startDate</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: dataInizio | en: startDate]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>L’inizio dell’intervallo temporale in cui si verificata la relazione.</p>
+</p><p class='section-desc'><b>Ha relazione di partenza:</b>
+<br/>
+<a href=#arch:hasAssociatedAgent>arch:hasAssociatedAgent</a> | <a href=#arch:hasAssociatedContext>arch:hasAssociatedContext</a> | <a href=#arch:hasAssociatedProfile>arch:hasAssociatedProfile</a> | <a href=#arch:hasHistoricalOrInstitutionalContext>arch:hasHistoricalOrInstitutionalContext</a> | <a href=#arch:hasInstitutionalProfile>arch:hasInstitutionalProfile</a> | <a href=#arch:hasOrganizationType>arch:hasOrganizationType</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:date'>xsd:date</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:time' name='arch:time'>arch:time</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tempo | en: time]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Il periodo di tempo espresso in stringa testuale in cui si verificata la relazione.</p>
+</p><p class='section-desc'><b>Ha relazione di partenza:</b>
+<br/>
+<a href=#arch:hasAssociatedAgent>arch:hasAssociatedAgent</a> | <a href=#arch:hasAssociatedContext>arch:hasAssociatedContext</a> | <a href=#arch:hasAssociatedProfile>arch:hasAssociatedProfile</a> | <a href=#arch:hasHistoricalOrInstitutionalContext>arch:hasHistoricalOrInstitutionalContext</a> | <a href=#arch:hasInstitutionalProfile>arch:hasInstitutionalProfile</a> | <a href=#arch:hasOrganizationType>arch:hasOrganizationType</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<div class='entity-div'>
+<h3 class='entity-section'>Attributo: <a href='#arch:type (rel)' name='arch:type (rel)'>arch:type (rel)</a>
+<small>&nbsp;&nbsp;<a class='backlink' href='#a-z'>torna su</a></small>
+ <span class='translation'>[it: tipo | en: type (rel)]</span></h3>
+<hr/>
+<p class='section-desc'><b>Descrizione</b>
+<br/>
+<p>Determina il tipo di relazione.</p>
+</p><p class='section-desc'><b>Ha relazione di partenza:</b>
+<br/>
+<a href=#arch:hasAssociatedAgent>arch:hasAssociatedAgent</a> | <a href=#arch:hasAssociatedContext>arch:hasAssociatedContext</a> | <a href=#arch:hasAssociatedProfile>arch:hasAssociatedProfile</a></p>
+<p class='section-desc'><b>Tipo di dato:</b>
+<br/>
+<a href='#xsd:string'>xsd:string</a></p> <b>Obbligatorietà:</b> No
+            <br/>
+            <b>Cardinalità:</b> 0..1
+            </p>
+</div>
+<hr/>
+</body></html>
